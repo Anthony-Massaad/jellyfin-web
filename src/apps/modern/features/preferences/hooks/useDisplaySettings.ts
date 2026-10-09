@@ -84,6 +84,7 @@ async function loadDisplaySettings({
     await settings.setUserInfo(userId, api);
 
     const displaySettings = {
+        accent: settings.accent(),
         customCss: settings.customCss() || '',
         dashboardTheme: settings.dashboardTheme() || defaultTheme?.id || FALLBACK_THEME_ID,
         dateTimeLocale: settings.dateTimeLocale() || 'auto',
@@ -151,6 +152,7 @@ async function saveDisplaySettings({
     userSettings.backdropScreensaverInterval(newDisplaySettings.backdropScreensaverInterval);
     userSettings.slideshowInterval(newDisplaySettings.slideshowInterval);
     userSettings.theme(newDisplaySettings.theme);
+    userSettings.accent(newDisplaySettings.accent);
 
     layoutManager.setLayout(normalizeValue(newDisplaySettings.layout));
 

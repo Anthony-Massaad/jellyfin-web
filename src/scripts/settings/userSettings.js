@@ -92,6 +92,8 @@ export class UserSettings {
             .then(result => {
                 result.CustomPrefs = result.CustomPrefs || {};
                 self.displayPrefs = result;
+                // Settings that are synced to the server (e.g. the accent) may have changed
+                Events.trigger(self, 'load');
             });
     }
 
@@ -458,6 +460,21 @@ export class UserSettings {
     }
 
     /**
+     * Get or set the accent color of the MD3 user interface (see scripts/accent.ts).
+     * Synced to the server display preferences, so it follows the user across devices; also cached locally.
+     * @param {string|undefined} [val] - Accent id, or an empty string for the theme default.
+     * @return {string} Accent id.
+     */
+    accent(val) {
+        if (val !== undefined) {
+            return this.set('appAccent', val);
+        }
+
+        // Before the server preferences load, this returns the local copy
+        return this.get('appAccent') || '';
+    }
+
+    /**
      * Get or set screensaver.
      * @param {string|undefined} [val] - Screensaver.
      * @return {string} Screensaver.
@@ -746,6 +763,7 @@ export const skipForwardLength = currentSettings.skipForwardLength.bind(currentS
 export const dashboardTheme = currentSettings.dashboardTheme.bind(currentSettings);
 export const skin = currentSettings.skin.bind(currentSettings);
 export const theme = currentSettings.theme.bind(currentSettings);
+export const accent = currentSettings.accent.bind(currentSettings);
 export const screensaver = currentSettings.screensaver.bind(currentSettings);
 export const backdropScreensaverInterval = currentSettings.backdropScreensaverInterval.bind(currentSettings);
 export const slideshowInterval = currentSettings.slideshowInterval.bind(currentSettings);

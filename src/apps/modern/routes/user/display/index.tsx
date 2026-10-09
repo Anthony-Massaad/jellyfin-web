@@ -80,6 +80,7 @@ export default function UserDisplayPreferences() {
                         <Button
                             type='submit'
                             size='large'
+                            className='settingsSaveButton'
                         >
                             {globalize.translate('Save')}
                         </Button>

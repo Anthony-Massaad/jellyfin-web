@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use '../../styles/md3/palettes.generated' as palettes;
+
+/* The "Ember" theme is generated from an MD3 seed color, so the legacy fallbacks reuse its color roles */
+@use '../_base/theme' with (
+    // Color palette
+    $background-default: map.get(palettes.$ember, 'surface'),
+    $background-paper: map.get(palettes.$ember, 'surface-container'),
+    $primary-main: map.get(palettes.$ember, 'primary'),
+    $primary-dark: map.get(palettes.$ember, 'primary-container'),
+    $primary-light: map.get(palettes.$ember, 'primary'),
+    $primary-contrastText: map.get(palettes.$ember, 'on-primary'),
+    $text-primary: map.get(palettes.$ember, 'on-surface'),
+    $text-secondary: map.get(palettes.$ember, 'on-surface-variant'),
+    $divider: map.get(palettes.$ember, 'outline-variant'),
+
+    // Components
+    $appBar-defaultBg: map.get(palettes.$ember, 'surface-container'),
+    $button-inheritContainedBg: map.get(palettes.$ember, 'surface-container-highest'),
+    $button-inheritContainedHoverBg: map.get(palettes.$ember, 'surface-container-high'),
+    $snackbarContent-bg: map.get(palettes.$ember, 'inverse-surface'),
+    $snackbarContent-color: map.get(palettes.$ember, 'inverse-on-surface'),
+    $secondary-main: map.get(palettes.$ember, 'secondary'),
+    $surface-overlay: map.get(palettes.$ember, 'surface-container-low')
+);
+
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'ember');

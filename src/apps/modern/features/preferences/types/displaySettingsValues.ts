@@ -1,4 +1,6 @@
 export interface DisplaySettingsValues {
+    /** The accent color id, or an empty string for the theme default. */
+    accent: string;
     customCss: string;
     dashboardTheme: string;
     dateTimeLocale: string;

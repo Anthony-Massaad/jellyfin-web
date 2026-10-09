@@ -106,6 +106,7 @@ export const LibraryRoutes: LibraryRoute[] = [
             }
         ]
     },
+    // Movies and shows only list their main views; the indexes stay stable for existing links and settings
     {
         path: '/movies',
         type: CollectionType.Movies,
@@ -117,21 +118,6 @@ export const LibraryRoutes: LibraryRoute[] = [
                 isDefault: true
             },
             {
-                index: 1,
-                label: 'Suggestions',
-                view: LibraryTab.Suggestions
-            },
-            {
-                index: 2,
-                label: 'Favorites',
-                view: LibraryTab.Favorites
-            },
-            {
-                index: 3,
-                label: 'Collections',
-                view: LibraryTab.Collections
-            },
-            {
                 index: 4,
                 label: 'Genres',
                 view: LibraryTab.Genres
@@ -140,11 +126,6 @@ export const LibraryRoutes: LibraryRoute[] = [
                 index: 5,
                 label: 'Studios',
                 view: LibraryTab.Studios
-            },
-            {
-                index: 6,
-                label: 'Playlists',
-                view: LibraryTab.Playlists
             }
         ]
     },
@@ -206,39 +187,14 @@ export const LibraryRoutes: LibraryRoute[] = [
                 isDefault: true
             },
             {
-                index: 1,
-                label: 'Suggestions',
-                view: LibraryTab.Suggestions
-            },
-            {
-                index: 2,
-                label: 'TabUpcoming',
-                view: LibraryTab.Upcoming
-            },
-            {
                 index: 3,
                 label: 'Genres',
                 view: LibraryTab.Genres
             },
             {
-                index: 4,
-                label: 'TabNetworks',
-                view: LibraryTab.Studios
-            },
-            {
                 index: 5,
                 label: 'Episodes',
                 view: LibraryTab.Episodes
-            },
-            {
-                index: 6,
-                label: 'Collections',
-                view: LibraryTab.Collections
-            },
-            {
-                index: 7,
-                label: 'Playlists',
-                view: LibraryTab.Playlists
             }
         ]
     },

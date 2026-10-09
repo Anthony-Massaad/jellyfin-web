@@ -1,4 +1,5 @@
 import React, { type FC, useCallback, useEffect, useRef, useState } from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import scrollerFactory from 'lib/scroller';
 import globalize from 'lib/globalize';
 import IconButton from '../emby-button/IconButton';
@@ -40,12 +41,37 @@ const ScrollButtons: FC<ScrollButtonsProps> = ({ scrollerFactoryRef, scrollState
         setLocaleScrollPos(localeAwarePos);
     }, [scrollState.scrollPos]);
 
+    // Expose the scroller size and position so themes can place the buttons over the sides of the slider
+    // (the same properties as the legacy emby-scrollbuttons element)
+    useEffect(() => {
+        const buttons = scrollButtonsRef.current;
+        const scroller = buttons?.nextElementSibling as HTMLElement | null;
+        if (!buttons || !scroller) return;
+
+        const update = () => {
+            const scrollerRect = scroller.getBoundingClientRect();
+            const rect = buttons.getBoundingClientRect();
+
+            buttons.style.setProperty('--emby-scroller-height', `${scroller.offsetHeight}px`);
+            buttons.style.setProperty('--emby-scroller-left', `${Math.round(scrollerRect.left - rect.left)}px`);
+            buttons.style.setProperty('--emby-scroller-right', `${Math.round(rect.right - scrollerRect.right)}px`);
+        };
+
+        const observer = new ResizeObserver(update);
+        observer.observe(scroller);
+        observer.observe(buttons);
+        update();
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div ref={scrollButtonsRef} className='emby-scrollbuttons padded-right'>
 
             <IconButton
                 type='button'
                 className='emby-scrollbuttons-button btnPrev'
+                data-direction='left'
                 onClick={triggerScrollLeft}
                 icon='chevron_left'
                 disabled={localeScrollPos <= 0}
@@ -54,6 +80,7 @@ const ScrollButtons: FC<ScrollButtonsProps> = ({ scrollerFactoryRef, scrollState
             <IconButton
                 type='button'
                 className='emby-scrollbuttons-button btnNext'
+                data-direction='right'
                 onClick={triggerScrollRight}
                 icon='chevron_right'
                 disabled={scrollState.scrollWidth > 0 && localeScrollPos + scrollState.scrollSize >= scrollState.scrollWidth}

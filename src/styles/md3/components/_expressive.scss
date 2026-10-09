@@ -1,0 +1,290 @@
+// MD3 Expressive refinements applied across the user interface: ambient color, glass surfaces, springy motion and
+// shape morphing. Loaded last so it can refine the component partials. The TV layout keeps opaque surfaces and its
+// own focus animations to stay smooth on low-end devices; reduced motion is handled in _base.
+
+@use '../functions' as md;
+
+// Ambient color: soft glows of the theme colors behind every page. The base theme paints the page and the fixed
+// background container with this image, so the glow stays in place while scrolling. Backdrops cover it as before.
+html#{md.$scope} {
+    --jf-palette-background-defaultImage:
+        radial-gradient(ellipse 70% 55% at 0% 0%, rgba(var(--md-sys-color-primary-rgb), 0.14), rgba(var(--md-sys-color-primary-rgb), 0) 70%),
+        radial-gradient(ellipse 60% 50% at 100% 0%, rgba(var(--md-sys-color-tertiary-rgb), 0.1), rgba(var(--md-sys-color-tertiary-rgb), 0) 70%);
+}
+
+#{md.$scope} {
+    // Page transitions: the incoming page fades in. Opacity only, so fixed elements inside pages are not affected.
+    .mainAnimatedPage:not(.hide) {
+        @include md.not-tv {
+            animation: md3-page-in 320ms cubic-bezier(0.31, 0.94, 0.34, 1) both;
+        }
+    }
+
+    // Emphasized section titles
+    .sectionTitle,
+    .sectionTitle-cards {
+        @include md.type('title-large');
+
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        font-weight: 500;
+        letter-spacing: -0.005em;
+    }
+
+    // Rails let their cards overflow (hover scale), so the page itself must not scroll sideways
+    body {
+        overflow-x: hidden;
+    }
+
+    // Thin scrollbars
+    * {
+        scrollbar-width: thin;
+    }
+
+    // Touch screens scroll without a visible page scrollbar (it would take space on the side of the page)
+    @media (pointer: coarse) {
+        & {
+            scrollbar-width: none;
+        }
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    // ...except where the app hides them (swipe rails, TV), which the rule above must not bring back
+    .hiddenScrollX,
+    .hiddenScrollY,
+    .hiddenScrollX-forced,
+    .hiddenScrollY-forced,
+    .emby-scroller.scrollX,
+    .layout-tv .scrollX,
+    .layout-tv .scrollY {
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    // Glass surfaces
+    .skinHeader-withBackground:not(.osdHeader) {
+        @include md.glass('surface-container', 0.72);
+    }
+
+    .actionSheet:not(.actionsheet-fullscreen) {
+        @include md.glass('surface-container', 0.8, 28px);
+        @include md.shape('large', $important: true);
+    }
+
+    .actionSheetMenuItem {
+        @include md.shape('medium');
+
+        transition: md.transition(background-color, 'short4', 'expressive-effects');
+    }
+
+    // Inset the rounded hover/focus highlight of the items on both sides (border-box: the scroller is 100% wide, so
+    // content-box padding pushed the items past the clipped right edge)
+    .actionSheetScroller {
+        box-sizing: border-box;
+        padding: 0 0.5em;
+    }
+
+    .actionsheetDivider {
+        margin: 0.35em 0.75em;
+    }
+
+    .dialog:not(.dialog-fullscreen):not(.dialog-fixedSize) {
+        @include md.glass('surface-container-high', 0.86, 32px);
+    }
+
+    .dialogContainer > .dialog.osdEpisodesSheet {
+        @include md.glass('surface-container-low', 0.8, 32px);
+    }
+
+    .upNextContainer {
+        @include md.glass('surface-container-high', 0.8, 28px);
+    }
+
+    // Icon buttons over the details backdrop
+    .mainDetailButtons > .detailButton:not(.btnPlay):not(.btnReplay),
+    .mainDetailButtons > .btnPlay:not(.hide) + .btnReplay {
+        @include md.glass('surface-container-highest', 0.55, 16px);
+    }
+
+    // Alphabet picker of library pages: a floating glass rail
+    .alphaPicker-fixed {
+        @include md.glass('surface-container', 0.7, 16px);
+        @include md.shape('full');
+
+        padding: 0.4em 0;
+    }
+
+    // Header navigation (apps/modern/components/AppToolbar/userViews/UserViewNav.tsx): pills, the current one filled
+    .appNavLink {
+        @include md.color(color, 'on-surface-variant');
+
+        border-radius: 2em;
+        padding-left: 14px;
+        padding-right: 16px;
+        transition: md.transition((background-color, color), 'medium2', 'expressive-effects'), md.transition(border-radius, 'medium2', 'expressive-spatial');
+
+        &:hover {
+            @include md.color(color, 'on-surface');
+        }
+    }
+
+    .appNavLink-active {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.interactive('on-secondary-container');
+
+        &:hover {
+            @include md.color(background-color, 'secondary-container');
+            @include md.color(color, 'on-secondary-container');
+        }
+    }
+
+    // Shape morph: pills and circles square off while pressed, with a spring
+    .emby-button.raised,
+    .emby-button.button-submit,
+    .homeSpotlight-button,
+    .homeLibraryButton,
+    .mainDetailButtons > .detailButton,
+    .videoOsdBottom .buttons .btnPause,
+    .upNextDialog-button {
+        @include md.shape-morph;
+
+        transition: md.transition((background-color, box-shadow, color, filter), 'short4'), md.transition((border-radius, transform), 'medium2', 'expressive-spatial');
+    }
+
+    // Filled buttons (including Play/Resume on details pages and in the spotlight): the on-primary state layer barely
+    // shows on a bright accent, so hovering also lightens the button and lifts it with an accent glow
+    .emby-button.button-submit,
+    .mainDetailButtons > .btnPlay,
+    .mainDetailButtons > .btnReplay {
+        @media (hover: hover) and (pointer: fine) {
+            @include md.not-tv {
+                &:hover:not(:disabled) {
+                    @include md.dual(
+                        box-shadow,
+                        0 6px 18px -4px md.c('primary', 0.55, true),
+                        0 6px 18px -4px md.c('primary', 0.55)
+                    );
+
+                    filter: brightness(1.1);
+                }
+            }
+        }
+    }
+
+    // ...except the replay button next to Resume, which is a tonal icon button
+    .mainDetailButtons > .btnPlay:not(.hide) + .btnReplay:hover {
+        box-shadow: none;
+        filter: none;
+    }
+
+    // Chips and indicators move with a spring
+    .detailSectionNav-chip,
+    .libraryViewChip,
+    .homeSpotlight-genre {
+        transition: md.transition((background-color, border-color, color), 'medium2', 'expressive-effects');
+    }
+
+    .homeSpotlight-indicator {
+        transition: md.transition(width, 'long2', 'expressive-spatial');
+    }
+
+    // Cards lift with a spring and cast a soft shadow while hovered
+    @media (hover: hover) and (pointer: fine) {
+        // Paint containment (components/cardbuilder/card.scss) clips everything to the card box, which would cut off
+        // the scaled card and its shadow. The TV layout removes it the same way (.show-animation) for its focus scale.
+        .card:not(.show-animation) {
+            @include md.not-tv {
+                contain: layout style;
+            }
+        }
+
+        // The hovered card is drawn above its neighbors
+        .card-hoverable:hover {
+            @include md.not-tv {
+                position: relative;
+                z-index: 1;
+            }
+        }
+
+        .card:not(.show-animation) > .cardBox {
+            @include md.not-tv {
+                transition: md.transition(transform, 'long2', 'expressive-spatial');
+            }
+        }
+
+        .card:not(.show-animation) .cardScalable {
+            @include md.not-tv {
+                transition: md.transition(box-shadow, 'long2', 'expressive-effects');
+            }
+        }
+
+        .card-hoverable:hover > .cardBox {
+            @include md.not-tv {
+                transform: translateY(-4px) scale(1.04, 1.04);
+            }
+        }
+
+        .card-hoverable:hover .cardScalable {
+            @include md.not-tv {
+                box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.55);
+            }
+        }
+    }
+
+    // Episode rows and library tiles respond like cards
+    .osdEpisodes-episode {
+        transition: md.transition(background-color, 'medium2', 'expressive-effects');
+    }
+
+    .osdEpisodes-thumbImage {
+        transition: md.transition(transform, 'long2', 'expressive-spatial');
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .osdEpisodes-episode:hover .osdEpisodes-thumbImage {
+            transform: scale(1.06);
+        }
+    }
+
+    // Menus and dialogs grow from the top (on phones, menus are bottom sheets that grow from the bottom: _dialogs.scss)
+    @media all and (min-width: 40.0625em) {
+        .actionSheet:not(.actionsheet-fullscreen) {
+            @include md.not-tv {
+                transform-origin: top center;
+            }
+        }
+    }
+
+    // Dropdowns grow down from their button, on every screen size
+    .actionSheet-dropdown {
+        @include md.not-tv {
+            transform-origin: top left;
+
+            @include md.dir(rtl) {
+                transform-origin: top right;
+            }
+        }
+    }
+
+    .dialog:not(.dialog-fullscreen):not(.dialog-fixedSize):not(.actionSheet) {
+        @include md.not-tv {
+            transform-origin: top center;
+        }
+    }
+}
+
+@keyframes md3-page-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

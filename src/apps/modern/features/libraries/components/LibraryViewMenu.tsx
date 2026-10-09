@@ -1,78 +1,57 @@
-
-import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
-import Button from '@mui/material/Button/Button';
-import Menu from '@mui/material/Menu/Menu';
-import MenuItem from '@mui/material/MenuItem/MenuItem';
-import Typography from '@mui/material/Typography';
-import React, { FC, useCallback, useState } from 'react';
+import Check from '@mui/icons-material/Check';
+import Chip from '@mui/material/Chip/Chip';
+import Stack from '@mui/material/Stack/Stack';
+import React, { FC } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { LibraryRoutes } from 'apps/modern/features/libraries/constants/libraryRoutes';
 import useCurrentTab from 'hooks/useCurrentTab';
 import globalize from 'lib/globalize';
 
-const LIBRARY_VIEW_MENU_ID = 'library-view-menu';
-
+/**
+ * The views of a library (e.g. Movies, Favorites, Genres) as a row of filter chips.
+ */
 const LibraryViewMenu: FC = () => {
     const location = useLocation();
     const [ searchParams, setSearchParams ] = useSearchParams();
     const { activeTab } = useCurrentTab();
 
-    const [ menuAnchorEl, setMenuAnchorEl ] = useState<null | HTMLElement>(null);
-    const isMenuOpen = Boolean(menuAnchorEl);
-
-    const onMenuButtonClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-        setMenuAnchorEl(event.currentTarget);
-    }, []);
-
-    const onMenuClose = useCallback(() => {
-        setMenuAnchorEl(null);
-    }, []);
-
     const currentRoute = LibraryRoutes.find(({ path }) => path === location.pathname);
     const currentTab = currentRoute?.views.find(({ index }) => index === activeTab);
 
-    if (!currentTab) return null;
+    if (!currentRoute || !currentTab) return null;
 
     return (
-        <>
-            <Button
-                variant='text'
-                size='large'
-                color='inherit'
-                endIcon={<ArrowDropDown />}
-                aria-controls={LIBRARY_VIEW_MENU_ID}
-                aria-haspopup='true'
-                onClick={onMenuButtonClick}
-            >
-                <Typography variant='h2' component='span'>
-                    {globalize.translate(currentTab.label)}
-                </Typography>
-            </Button>
+        <Stack
+            component='nav'
+            direction='row'
+            className='libraryViewChips'
+            aria-label={globalize.translate('HeaderViews')}
+        >
+            {currentRoute.views.map(tab => {
+                const isSelected = tab.index === currentTab.index;
 
-            <Menu
-                anchorEl={menuAnchorEl}
-                id={LIBRARY_VIEW_MENU_ID}
-                keepMounted
-                open={isMenuOpen}
-                onClose={onMenuClose}
-            >
-                {currentRoute?.views.map(tab => (
-                    <MenuItem
+                return (
+                    <Chip
                         key={tab.view}
+                        component='button'
+                        type='button'
+                        className={`libraryViewChip${isSelected ? ' libraryViewChip-selected' : ''}`}
+                        label={globalize.translate(tab.label)}
+                        icon={isSelected ? <Check /> : undefined}
+                        variant={isSelected ? 'filled' : 'outlined'}
+                        aria-current={isSelected ? 'page' : undefined}
+                        clickable
                         // eslint-disable-next-line react/jsx-no-bind
                         onClick={() => {
+                            if (isSelected) return;
                             searchParams.set('tab', `${tab.index}`);
                             setSearchParams(searchParams);
-                            onMenuClose();
                         }}
-                        selected={tab.index === currentTab.index}
-                    >
-                        {globalize.translate(tab.label)}
-                    </MenuItem>
-                ))}
-            </Menu>
-        </>
+                    />
+                );
+            })}
+        </Stack>
     );
 };
 

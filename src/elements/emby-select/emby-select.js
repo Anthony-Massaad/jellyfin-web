@@ -22,6 +22,11 @@ function enableNativeMenu() {
         return true;
     }
 
+    // The MD3 user interface shows an MD3 menu (a bottom sheet on phones, see styles/md3/components/_dialogs.scss)
+    if (document.documentElement.hasAttribute('data-md3')) {
+        return false;
+    }
+
     return !layoutManager.tv;
 }
 
@@ -46,6 +51,8 @@ function showActionSheet(select) {
     }).then(function (value) {
         setValue(select, value);
         triggerChange(select);
+    }).catch(function () {
+        // The menu was closed without choosing an option
     });
 }
 

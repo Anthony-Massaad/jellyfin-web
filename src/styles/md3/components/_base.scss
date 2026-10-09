@@ -1,0 +1,87 @@
+// MD3 foundation: typography, base surfaces, scrollbars and motion preferences.
+
+@use '../functions' as md;
+
+#{md.$scope} {
+    // Type scale for legacy headings. Rails use h2.sectionTitle.
+    h1 {
+        @include md.type('headline-medium');
+    }
+
+    h2 {
+        @include md.type('title-large');
+    }
+
+    h3 {
+        @include md.type('title-medium');
+    }
+
+    .sectionTitle {
+        @include md.color(color, 'on-surface');
+    }
+
+    .pageTitle {
+        @include md.type('title-large');
+    }
+
+    // Scrollbars
+    * {
+        @include md.dual(scrollbar-color, md.c('outline-variant', 1, true) transparent, md.c('outline-variant') transparent);
+    }
+
+    ::-webkit-scrollbar-track {
+        box-shadow: none;
+    }
+
+    ::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb:horizontal,
+    ::-webkit-scrollbar-thumb:vertical {
+        @include md.color(background-color, 'outline-variant');
+        @include md.shape('full');
+    }
+
+    ::selection {
+        @include md.color(background-color, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+    }
+
+    // Legacy surfaces that use the static $surface-overlay color in the base theme
+    .paperList,
+    .collapseContent {
+        @include md.color(background-color, 'surface-container-low');
+        @include md.shape('medium');
+    }
+
+    .formDialogHeader:not(.formDialogHeader-clear),
+    .formDialogFooter:not(.formDialogFooter-clear) {
+        @include md.color(background-color, 'surface-container-high');
+    }
+
+    .infoBanner {
+        @include md.shape('medium');
+    }
+
+    .button-link {
+        @include md.color(color, 'primary');
+    }
+
+    .secondaryText,
+    .fieldDescription {
+        @include md.color(color, 'on-surface-variant');
+    }
+}
+
+// Respect the user's reduced motion preference
+@media (prefers-reduced-motion: reduce) {
+    #{md.$scope} *,
+    #{md.$scope} *::before,
+    #{md.$scope} *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+    }
+}

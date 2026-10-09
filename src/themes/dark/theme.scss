@@ -1,6 +1,9 @@
 /* Import the base theme */
 @use '../_base/theme';
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'dark');
+
 /* Card background color variants */
 .defaultCardBackground1 {
     background-color: #00455c;

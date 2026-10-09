@@ -22,6 +22,7 @@ import layoutManager from 'components/layoutManager';
 import listView from 'components/listview/listview';
 import loading from 'components/loading/loading';
 import ItemDetailsMetadataList from 'components/itemDetails/ItemDetailsMetadataList';
+import { initSectionNav } from 'components/itemDetails/sectionNav';
 import { playbackManager } from 'components/playback/playbackmanager';
 import { appRouter } from 'components/router/appRouter';
 import itemShortcuts from 'components/shortcuts';
@@ -2125,6 +2126,7 @@ export default function (view, params) {
             splitVersions(self, view, apiClient, params);
         });
         bindAll(view, '.btnMoreCommands', 'click', onMoreCommandsClick);
+        const destroySectionNav = initSectionNav(view);
         view.querySelector('.selectSource').addEventListener('change', function () {
             renderVideoSelections(view, self._currentPlaybackMediaSources);
             renderAudioSelections(view, self._currentPlaybackMediaSources);
@@ -2164,6 +2166,7 @@ export default function (view, params) {
         });
         view.addEventListener('viewdestroy', function () {
             unmount(self);
+            destroySectionNav();
 
             currentItem = null;
             self._currentPlaybackMediaSources = null;

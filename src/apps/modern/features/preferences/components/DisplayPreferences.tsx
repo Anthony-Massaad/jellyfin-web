@@ -1,4 +1,4 @@
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -18,6 +18,7 @@ import { useThemes } from 'hooks/useThemes';
 import globalize from 'lib/globalize';
 
 import { useScreensavers } from '../hooks/useScreensavers';
+import AccentPicker from './AccentPicker';
 import type { DisplaySettingsValues } from '../types/displaySettingsValues';
 
 interface DisplayPreferencesProps {
@@ -76,11 +77,17 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                 </FormControl>
             ) }
 
+            <AccentPicker
+                value={values.accent}
+                onChange={onChange}
+            />
+
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-disable-css-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.disableCustomCss}
                             onChange={onChange}
                         />
@@ -219,9 +226,10 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-faster-animations-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableFasterAnimation}
                             onChange={onChange}
                         />
@@ -236,9 +244,10 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-blurhash-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableBlurHash}
                             onChange={onChange}
                         />

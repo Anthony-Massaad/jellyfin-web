@@ -1,0 +1,480 @@
+// MD3 settings sub-pages (Display, Home, Playback, Subtitles, Controls) and episode lists on details pages.
+//
+// Settings: each section is a glass card with a colored heading, rows are separated by dividers, toggles are switches,
+// and the save button floats at the bottom of the screen. Legacy pages use emby-* form elements; the Display page is
+// built with MUI (apps/modern/routes/user/display), whose controls are styled in themes/md3/overrides.ts.
+
+@use 'sass:string';
+@use '../functions' as md;
+
+$navigation-bar-height: 88px; // The floating bar (60px), its offset and a gap
+
+/// The dropdown chevron (Material "keyboard_arrow_down") in the theme's on-surface-variant color, drawn as the
+/// background of the select so it is always centered in the field, whatever comes before or after it.
+@function -chevron($color) {
+    $hex: string.slice('#{$color}', 2);
+
+    @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23#{$hex}' d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E");
+}
+
+@mixin -card {
+    @include md.glass('surface-container', 0.6, 20px);
+    @include md.shape('extra-large');
+
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    @include md.not-tv {
+        animation: md3-preferences-rise 520ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+    }
+}
+
+@mixin -card-title {
+    @include md.type('title-medium');
+    @include md.color(color, 'primary');
+
+    font-family: var(--md-sys-typescale-font-medium, inherit);
+    font-weight: 500;
+}
+
+#{md.$scope} {
+    .userPreferencesPage form {
+        max-width: 46em;
+        padding-top: 1em;
+    }
+
+    // Quick Connect is a single small card: centered on the page
+    #quickConnectPreferencesPage form {
+        max-width: 34em;
+        margin: 0 auto;
+        padding-top: 2em;
+    }
+
+    // Section cards (legacy pages). Nested sections (e.g. a checkbox group on the Home page) are not cards.
+    .userPreferencesPage form > .verticalSection,
+    .userPreferencesPage .qualitySections > .verticalSection,
+    .userPreferencesPage .perLibrarySettings > .verticalSection {
+        @include -card;
+
+        padding: 1.25em 1.5em 0.75em;
+        margin: 0 0 1.25em;
+
+        @media all and (max-width: 35em) {
+            padding: 1em 1.1em 0.5em;
+        }
+
+        > .sectionTitle {
+            @include -card-title;
+
+            margin: 0 0 0.5em;
+        }
+    }
+
+    .userPreferencesPage .verticalSection .verticalSection {
+        margin: 0;
+        padding: 0;
+    }
+
+    // Staggered entrance of the cards
+    @for $i from 2 through 8 {
+        .userPreferencesPage form > .verticalSection:nth-child(#{$i}),
+        .userPreferencesPage .perLibrarySettings > .verticalSection:nth-child(#{$i}) {
+            animation-delay: #{($i - 1) * 50}ms;
+        }
+    }
+
+    // Rows: fields and toggles separated by dividers
+    .userPreferencesPage form .verticalSection {
+        .selectContainer,
+        .inputContainer,
+        .checkboxContainer,
+        .checkboxListContainer,
+        .sliderContainer-settings {
+            margin: 0 !important;
+            padding: 0.9em 0;
+
+            @include md.dual(
+                border-bottom,
+                1px solid md.c('outline-variant', 0.5, true),
+                1px solid md.c('outline-variant', 0.5)
+            );
+        }
+
+        > :last-child,
+        .verticalSection > :last-child,
+        .selectContainer.hide + :last-child {
+            border-bottom: 0;
+        }
+
+        .fieldDescription {
+            @include md.type('body-medium');
+            @include md.color(color, 'on-surface-variant');
+
+            margin-top: 0.4em;
+            padding: 0;
+        }
+    }
+
+    // Select fields: rounded tonal fields with the label above
+    .userPreferencesPage .selectLabel {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface-variant');
+
+        margin-bottom: 0.5em;
+    }
+
+    .userPreferencesPage .emby-select-withcolor {
+        @include md.color(background-color, 'surface-container-highest');
+        @include md.shape('medium');
+
+        min-height: 48px;
+        box-shadow: none;
+        background-image: -chevron(md.hex('on-surface-variant'));
+        background-repeat: no-repeat;
+        background-size: 24px 24px;
+        background-position: right 12px center;
+        padding-right: 48px;
+        transition: md.transition(background-color, 'short4');
+
+        @include md.dir(rtl) {
+            background-position: left 12px center;
+            padding-right: 0.75em;
+            padding-left: 48px;
+        }
+
+        &:hover {
+            @include md.color(background-color, 'surface-bright');
+        }
+
+        &:focus {
+            @include md.focus-ring;
+
+            box-shadow: none;
+        }
+    }
+
+    .userPreferencesPage .selectArrowContainer {
+        display: none;
+    }
+
+    .userPreferencesPage .emby-input,
+    .userPreferencesPage .emby-textarea {
+        @include md.shape('medium');
+
+        box-shadow: none;
+
+        &:focus {
+            @include md.focus-ring;
+
+            box-shadow: none;
+        }
+    }
+
+    // Toggles: emby-checkbox drawn as an MD3 switch at the end of the row
+    .userPreferencesPage .emby-checkbox-label {
+        display: flex;
+        align-items: center;
+        height: auto;
+        min-height: 40px;
+        width: 100%;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .userPreferencesPage .emby-checkbox-label .checkboxLabel {
+        @include md.type('body-large');
+        @include md.color(color, 'on-surface');
+
+        order: 1;
+        flex-grow: 1;
+        padding: 0 1em 0 0 !important;
+
+        @include md.dir(rtl) {
+            padding: 0 0 0 1em !important;
+        }
+    }
+
+    .userPreferencesPage .emby-checkbox-label .checkboxOutline {
+        @include md.color(background-color, 'surface-container-highest');
+        @include md.color(border-color, 'outline');
+        @include md.shape('full');
+
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        order: 2;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        width: 52px;
+        height: 32px;
+        margin: 0;
+        border-width: 2px;
+        border-style: solid;
+        transition: md.transition((background-color, border-color), 'medium2', 'expressive-effects');
+
+        // Thumb
+        &::after {
+            @include md.color(background-color, 'outline');
+
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 6px;
+            width: 16px;
+            height: 16px;
+            margin-top: -8px;
+            border-radius: 50%;
+            transition: md.transition((left, width, height, margin-top, background-color), 'medium4', 'expressive-spatial');
+        }
+
+        @include md.dir(rtl) {
+            &::after {
+                left: auto;
+                right: 6px;
+            }
+        }
+
+        .checkboxIcon {
+            display: none;
+        }
+    }
+
+    .userPreferencesPage .emby-checkbox:checked + .checkboxLabel + .checkboxOutline,
+    .userPreferencesPage .emby-checkbox:checked + span + .checkboxOutline {
+        @include md.color(background-color, 'primary');
+        @include md.color(border-color, 'primary');
+
+        &::after {
+            @include md.color(background-color, 'on-primary');
+
+            left: 22px;
+            width: 24px;
+            height: 24px;
+            margin-top: -12px;
+        }
+
+        @include md.dir(rtl) {
+            &::after {
+                left: auto;
+                right: 22px;
+            }
+        }
+    }
+
+    .userPreferencesPage .emby-checkbox:focus + span + .checkboxOutline {
+        @include md.focus-ring(2px);
+    }
+
+    // Several toggles in one row (per-library options on the Home page)
+    .userPreferencesPage .checkboxListContainer .emby-checkbox-label + .emby-checkbox-label,
+    .userPreferencesPage .checkboxListContainer > div + .emby-checkbox-label {
+        margin-top: 0.5em;
+    }
+
+    .userPreferencesPage .checkboxFieldDescription {
+        padding-left: 0 !important;
+        padding-right: 64px !important;
+
+        @include md.dir(rtl) {
+            padding-right: 0 !important;
+            padding-left: 64px !important;
+        }
+    }
+
+    // Library order and folder lists on the Home page
+    .userPreferencesPage .viewOrderList,
+    .userPreferencesPage .paperList {
+        background: transparent;
+        margin: 0 -0.5em;
+    }
+
+    .userPreferencesPage .viewOrderList .listItem {
+        @include md.shape('large');
+        @include md.interactive('on-surface');
+
+        padding: 0.4em 0.5em;
+    }
+
+    .userPreferencesPage .viewOrderList .listItemIcon {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.shape('medium');
+    }
+
+    // Subtitle preview
+    .userPreferencesPage .subtitleappearance-preview {
+        @include md.shape('large');
+
+        overflow: hidden;
+    }
+
+    // Save: a floating pill at the bottom of the screen, so it is always within reach
+    .userPreferencesPage .btnSave,
+    .userPreferencesPage .settingsSaveButton {
+        @include md.elevation(3);
+        @include md.type('title-medium');
+
+        position: sticky;
+        z-index: 2;
+        bottom: calc(1.5em + env(safe-area-inset-bottom));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-width: 10em;
+        min-height: 56px;
+        padding: 0 2.25em;
+        margin: 1.5em 0 0 auto;
+
+        @include md.dir(rtl) {
+            margin: 1.5em auto 0 0;
+        }
+
+        @include md.not-tv {
+            @include md.dual(
+                box-shadow,
+                (0 12px 32px -8px md.c('primary', 0.45, true), 0 4px 8px rgba(0, 0, 0, 0.3)),
+                (0 12px 32px -8px md.c('primary', 0.45), 0 4px 8px rgba(0, 0, 0, 0.3))
+            );
+        }
+    }
+
+    .userPreferencesPage .btnSave.hide {
+        display: none;
+    }
+
+    &.md3-withNavigationBar .userPreferencesPage .btnSave,
+    &.md3-withNavigationBar .userPreferencesPage .settingsSaveButton {
+        bottom: calc(#{$navigation-bar-height} + 1em + env(safe-area-inset-bottom));
+    }
+
+    // Display page (MUI): the sections are stacks with a heading
+    #displayPreferencesPage form > .MuiStack-root > .MuiStack-root {
+        @include -card;
+
+        padding: 1.5em;
+
+        > .MuiTypography-h2 {
+            @include -card-title;
+        }
+    }
+
+    #displayPreferencesPage .MuiFormControlLabel-labelPlacementStart {
+        justify-content: space-between;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    // Episode lists on details pages (season page): a glass card per episode with a large 16:9 thumbnail
+    .itemDetailPage .vertical-list > .listItem-largeImage {
+        @include md.glass('surface-container', 0.55, 16px);
+        @include md.shape('large');
+
+        padding: 0.75em;
+        margin: 0 0 0.75em;
+        border: 0;
+        transition: md.transition(background-color, 'medium2', 'expressive-effects');
+
+        @include md.not-tv {
+            animation: md3-preferences-rise 480ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                @include md.color(background-color, 'surface-container-highest');
+            }
+        }
+
+        &:focus,
+        &:focus-within {
+            @include md.color(background-color, 'surface-container-highest');
+        }
+
+        .listItemImage-large {
+            @include md.shape('medium');
+
+            position: relative;
+            overflow: hidden;
+            margin: 0 0.5em 0 0;
+
+            @include md.not-tv {
+                width: 22vw;
+                max-width: 20em;
+                min-width: 9em;
+                height: auto;
+                aspect-ratio: 16 / 9;
+            }
+
+            @include md.dir(rtl) {
+                margin: 0 0 0 0.5em;
+            }
+        }
+
+        .listItemImageButton {
+            @include md.color(background-color, 'surface-container-highest', 0.7);
+            @include md.color(color, 'on-surface');
+
+            backdrop-filter: blur(8px);
+            transition: md.transition(transform, 'medium2', 'expressive-spatial');
+        }
+
+        .listItemBody {
+            padding: 0.25em 0.75em;
+        }
+
+        .listItemBodyText:first-child {
+            @include md.type('title-medium');
+
+            margin-bottom: 0.25em;
+        }
+
+        .listItemMediaInfo {
+            @include md.type('body-small');
+            @include md.color(color, 'on-surface-variant');
+        }
+
+        .listItem-overview {
+            @include md.type('body-medium');
+            @include md.color(color, 'on-surface-variant');
+
+            margin-top: 0.4em;
+            overflow: hidden;
+            white-space: normal;
+
+            /* NOTE: line clamping is non-standard and requires vendor-prefixed rules to function */
+            display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+
+        .listViewUserDataButtons {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .itemDetailPage .vertical-list > .listItem-largeImage:hover .listItemImageButton {
+            transform: scale(1.1);
+        }
+    }
+
+    @for $i from 2 through 10 {
+        .itemDetailPage .vertical-list > .listItem-largeImage:nth-child(#{$i}) {
+            animation-delay: #{($i - 1) * 35}ms;
+        }
+    }
+}
+
+@keyframes md3-preferences-rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

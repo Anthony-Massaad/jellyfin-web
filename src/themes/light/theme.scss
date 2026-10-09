@@ -23,6 +23,9 @@
     $button-inheritContainedHoverBg: #ccc
 );
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'light');
+
 // Override the alpha picker selected colors
 .alphaPickerButton-selected {
     background-color: var(--jf-palette-primary-main, palette.$primary-main);

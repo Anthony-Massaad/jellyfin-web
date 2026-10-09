@@ -29,3 +29,12 @@ export const getDefaultViewIndex = (path: string, libraryId?: string | null) => 
         ?? views.find(view => view.isDefault)?.index
         ?? 0;
 };
+
+/**
+ * Utility function to check if a view index is available for a specified URL path.
+ * Paths that are not libraries accept any index.
+ */
+export const isViewIndexAvailable = (path: string, index: number) => {
+    const route = LibraryRoutes.find(r => r.path === path);
+    return !route || route.views.some(view => view.index === index);
+};

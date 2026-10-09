@@ -86,12 +86,34 @@ function getOffsets(elems: Element[]): Offset[] {
     return results;
 }
 
+/** The `positionY` that opens the menu as a dropdown: below the element, aligned to its start edge. */
+const POSITION_BELOW = 'below';
+
+/** The space between a dropdown menu and its element, and the screen edges. */
+const DROPDOWN_GAP = 8;
+
+function getPositionBelow(pos: Offset, dlg: HTMLElement, windowWidth: number, windowHeight: number) {
+    const width = dlg.offsetWidth || 160;
+    const top = pos.top + (pos.height || 0) + DROPDOWN_GAP;
+    const start = globalize.getIsRTL() ? pos.left + (pos.width || 0) - width : pos.left;
+    const left = Math.min(Math.max(start, DROPDOWN_GAP), windowWidth - width - DROPDOWN_GAP);
+
+    // Long menus scroll instead of running past the bottom of the screen
+    dlg.style.maxHeight = Math.max(windowHeight - top - DROPDOWN_GAP, 120) + 'px';
+
+    return { top, left };
+}
+
 function getPosition(positionTo: Element, options: Options, dlg: HTMLElement) {
     const windowSize = dom.getWindowSize();
     const windowHeight = windowSize.innerHeight;
     const windowWidth = windowSize.innerWidth;
 
     const pos = getOffsets([positionTo])[0];
+
+    if (options.positionY === POSITION_BELOW) {
+        return getPositionBelow(pos, dlg, windowWidth, windowHeight);
+    }
 
     if (options.positionY !== 'top') {
         pos.top += (pos.height || 0) / 2;
@@ -172,6 +194,11 @@ export function show(options: Options) {
     }
 
     dlg.classList.add('actionSheet');
+
+    if (options.positionY === POSITION_BELOW && !isFullscreen) {
+        // Stays anchored to its element on phones too (instead of a bottom sheet)
+        dlg.classList.add('actionSheet-dropdown');
+    }
 
     if (options.dialogClass) {
         dlg.classList.add(options.dialogClass);

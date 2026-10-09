@@ -54,6 +54,11 @@ const getCurrentUserView = (
     return userViews?.find(({ Id: id }) => id === libraryId);
 };
 
+/** Navigation links are pills; the current one is filled (styles/md3/components/_expressive.scss). */
+const getNavLinkClassName = (isActive: boolean) => (
+    isActive ? 'appNavLink appNavLink-active' : 'appNavLink'
+);
+
 const UserViewNav = () => {
     const location = useLocation();
     const [ searchParams ] = useSearchParams();
@@ -125,7 +130,9 @@ const UserViewNav = () => {
         <>
             <Button
                 variant='text'
-                color={(currentUserView?.Id === MetaView.Favorites.Id) ? 'primary' : 'inherit'}
+                color='inherit'
+                className={getNavLinkClassName(currentUserView?.Id === MetaView.Favorites.Id)}
+                aria-current={(currentUserView?.Id === MetaView.Favorites.Id) ? 'page' : undefined}
                 startIcon={<Favorite />}
                 component={Link}
                 to='/home?tab=1'
@@ -140,6 +147,7 @@ const UserViewNav = () => {
                             key={navItem.name}
                             variant='text'
                             color='inherit'
+                            className={getNavLinkClassName(false)}
                             startIcon={<Icon>{navItem.icon || 'link'}</Icon>}
                             component='a'
                             href={navItem.url}
@@ -155,7 +163,9 @@ const UserViewNav = () => {
                     <Button
                         key={navItem.Id}
                         variant='text'
-                        color={(navItem.Id === currentUserView?.Id) ? 'primary' : 'inherit'}
+                        color='inherit'
+                        className={getNavLinkClassName(navItem.Id === currentUserView?.Id)}
+                        aria-current={(navItem.Id === currentUserView?.Id) ? 'page' : undefined}
                         startIcon={<LibraryIcon item={navItem} />}
                         component={Link}
                         to={appRouter.getRouteUrl(navItem, { context: navItem.CollectionType }).substring(1)}
@@ -170,6 +180,7 @@ const UserViewNav = () => {
                     <Button
                         variant='text'
                         color='inherit'
+                        className={getNavLinkClassName(false)}
                         endIcon={<ArrowDropDown />}
                         aria-controls={OVERFLOW_MENU_ID}
                         aria-haspopup='true'

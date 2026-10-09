@@ -18,6 +18,7 @@ import skinManager from '../../scripts/themeManager';
 import Events from '../../utils/events.ts';
 import toast from '../toast/toast';
 
+import { ACCENT_NAME_KEYS, ACCENTS, applyAccent, isAccentSupported } from '../../scripts/accent';
 import template from './displaySettings.template.html';
 
 import '../../elements/emby-select/emby-select';
@@ -37,6 +38,23 @@ function fillThemes(select, selectedTheme) {
         // set the current theme
         select.value = selectedTheme || defaultTheme.id;
     });
+}
+
+function fillAccents(context, selectedAccent) {
+    const container = context.querySelector('.selectAccentContainer');
+    const select = context.querySelector('#selectAccent');
+
+    if (!isAccentSupported()) {
+        container.classList.add('hide');
+        return;
+    }
+
+    select.innerHTML = [ '', ...ACCENTS ].map(id => {
+        const name = globalize.translate(id ? ACCENT_NAME_KEYS[id] : 'AccentThemeDefault');
+        return `<option value="${id}">${escapeHtml(name)}</option>`;
+    }).join('');
+    select.value = selectedAccent;
+    container.classList.remove('hide');
 }
 
 function loadScreensavers(context, userSettings) {
@@ -113,6 +131,7 @@ function loadForm(context, user, userSettings) {
     }
 
     fillThemes(context.querySelector('#selectTheme'), userSettings.theme());
+    fillAccents(context, userSettings.accent());
     fillThemes(context.querySelector('#selectDashboardTheme'), userSettings.dashboardTheme());
 
     loadScreensavers(context, userSettings);
@@ -161,6 +180,9 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
     userSettingsInstance.enableThemeSongs(context.querySelector('#chkThemeSong').checked);
     userSettingsInstance.enableThemeVideos(context.querySelector('#chkThemeVideo').checked);
     userSettingsInstance.theme(context.querySelector('#selectTheme').value);
+    if (isAccentSupported()) {
+        userSettingsInstance.accent(context.querySelector('#selectAccent').value);
+    }
     userSettingsInstance.dashboardTheme(context.querySelector('#selectDashboardTheme').value);
     userSettingsInstance.screensaver(context.querySelector('.selectScreensaver').value);
     userSettingsInstance.backdropScreensaverInterval(context.querySelector('#txtBackdropScreensaverInterval').value);
@@ -183,6 +205,7 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
 
     if (user.Id === apiClient.getCurrentUserId()) {
         skinManager.setTheme(userSettingsInstance.theme());
+        applyAccent(userSettingsInstance.accent());
     }
 
     layoutManager.setLayout(context.querySelector('.selectLayout').value);

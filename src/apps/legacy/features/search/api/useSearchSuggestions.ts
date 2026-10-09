@@ -1,6 +1,7 @@
 import type { AxiosRequestConfig } from 'axios';
 import type { Api } from '@jellyfin/sdk';
 import { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-item-kind';
+import { ImageType } from '@jellyfin/sdk/lib/generated-client/models/image-type';
 import { ItemSortBy } from '@jellyfin/sdk/lib/generated-client/models/item-sort-by';
 import { getLibraryApi } from '@jellyfin/sdk/lib/utils/api/library-api';
 import { useQuery } from '@tanstack/react-query';
@@ -24,8 +25,9 @@ const fetchGetItems = async (
             ],
             limit: 20,
             recursive: true,
-            imageTypeLimit: 0,
-            enableImages: false,
+            // The suggestions are shown as artwork tiles
+            imageTypeLimit: 1,
+            enableImageTypes: [ ImageType.Backdrop, ImageType.Thumb, ImageType.Primary ],
             parentId,
             enableTotalRecordCount: false
         },

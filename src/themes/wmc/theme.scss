@@ -21,6 +21,9 @@
     $button-inheritContainedHoverBg: #143451
 );
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'wmc');
+
 /* Card background color variants */
 .defaultCardBackground1 {
     background-color: #d2b019;

@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use '../../styles/md3/palettes.generated' as palettes;
+
+/* The "Orchid" theme is generated from an MD3 seed color, so the legacy fallbacks reuse its color roles */
+@use '../_base/theme' with (
+    // Color palette
+    $background-default: map.get(palettes.$orchid, 'surface'),
+    $background-paper: map.get(palettes.$orchid, 'surface-container'),
+    $primary-main: map.get(palettes.$orchid, 'primary'),
+    $primary-dark: map.get(palettes.$orchid, 'primary-container'),
+    $primary-light: map.get(palettes.$orchid, 'primary'),
+    $primary-contrastText: map.get(palettes.$orchid, 'on-primary'),
+    $text-primary: map.get(palettes.$orchid, 'on-surface'),
+    $text-secondary: map.get(palettes.$orchid, 'on-surface-variant'),
+    $divider: map.get(palettes.$orchid, 'outline-variant'),
+
+    // Components
+    $appBar-defaultBg: map.get(palettes.$orchid, 'surface-container'),
+    $button-inheritContainedBg: map.get(palettes.$orchid, 'surface-container-highest'),
+    $button-inheritContainedHoverBg: map.get(palettes.$orchid, 'surface-container-high'),
+    $snackbarContent-bg: map.get(palettes.$orchid, 'inverse-surface'),
+    $snackbarContent-color: map.get(palettes.$orchid, 'inverse-on-surface'),
+    $secondary-main: map.get(palettes.$orchid, 'secondary'),
+    $surface-overlay: map.get(palettes.$orchid, 'surface-container-low')
+);
+
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'orchid');

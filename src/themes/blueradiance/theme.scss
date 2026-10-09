@@ -19,6 +19,9 @@
     $button-inheritContainedHoverBg: rgba(0, 0, 0, 0.7)
 );
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'blueradiance');
+
 /* Card background color variants */
 .defaultCardBackground1 {
     background-color: #213440;

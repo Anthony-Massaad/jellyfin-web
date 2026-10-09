@@ -1,0 +1,376 @@
+// MD3 item details page: full-bleed backdrop, title, metadata chips, actions and section shortcuts.
+
+@use '../functions' as md;
+
+/// Assist chip used for metadata (year, rating, runtime, genres, studios)
+@mixin assist-chip {
+    @include md.type('label-large');
+    @include md.color(border-color, 'outline-variant');
+    @include md.shape('small');
+
+    display: inline-flex;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0.2em 0.75em;
+}
+
+#{md.$scope} {
+    // Backdrop: taller, with a gradient that fades into the page
+    .itemBackdrop {
+        @include md.layout(desktop) {
+            height: 60vh;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            @include md.dual(
+                background-image,
+                linear-gradient(to top, md.c('surface', 1, true) 0%, md.c('surface', 0.7, true) 18%, md.c('surface', 0, true) 60%),
+                linear-gradient(to top, md.c('surface') 0%, md.c('surface', 0.7) 18%, md.c('surface', 0) 60%)
+            );
+        }
+    }
+
+    // Overrides the hard-coded gradient in apps/modern/AppOverrides.scss that keeps the app bar legible
+    .itemBackdrop::before {
+        @include md.dual(
+            background,
+            linear-gradient(180deg, md.c('scrim', 0.5, true) 0%, md.c('scrim', 0, true) 6rem),
+            linear-gradient(180deg, md.c('scrim', 0.5) 0%, md.c('scrim', 0) 6rem)
+        );
+    }
+
+    .itemBackdropProgressBar {
+        z-index: 1;
+    }
+
+    // The ribbon sits over the faded backdrop instead of a separate bar
+    .detailRibbon {
+        @include md.color(color, 'on-surface');
+
+        background: transparent;
+        background-image: none;
+    }
+
+    .itemName {
+        @include md.type('headline-large');
+        @include md.color(color, 'on-surface');
+
+        @include md.layout(mobile) {
+            @include md.type('headline-small');
+        }
+    }
+
+    .parentName {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .itemName.originalTitle {
+        @include md.type('title-medium');
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    // Poster
+    .detailImageContainer .cardImageContainer,
+    .detailImageContainer .cardContent,
+    .detailImageContainer .cardPadder,
+    .detailImageContainer .blurhash-canvas,
+    .itemDetailImage {
+        @include md.shape('large');
+    }
+
+    .itemDetailImage {
+        @include md.elevation(3);
+    }
+
+    // Metadata chips
+    .itemMiscInfo-primary {
+        > .mediaInfoItem:not(.mediaInfoIconItem):not(.mediaInfoCriticRating) {
+            @include assist-chip;
+
+            margin-bottom: 0.4em;
+        }
+
+        > .mediaInfoText {
+            @include md.color(border-color, 'outline');
+
+            font-size: inherit;
+        }
+    }
+
+    .itemMiscInfo {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    // Actions: a filled play button followed by tonal icon buttons
+    .mainDetailButtons {
+        flex-wrap: wrap;
+    }
+
+    .mainDetailButtons > .detailButton {
+        @include md.color(background-color, 'surface-container-highest');
+        @include md.color(color, 'on-surface-variant');
+        @include md.shape('full');
+        @include md.interactive('on-surface-variant');
+
+        width: 3.25em;
+        height: 3.25em;
+        padding: 0 !important;
+        margin: 0 0.6em 0.6em 0 !important;
+        transition: md.transition(background-color, 'short4');
+
+        @include md.dir(rtl) {
+            margin: 0 0 0.6em 0.6em !important;
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Filled button with its label ("Play" or "Resume", from the translated title)
+    .mainDetailButtons > .btnPlay,
+    .mainDetailButtons > .btnReplay {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+        @include md.interactive('on-primary');
+
+        flex-direction: row;
+        width: auto;
+        height: 3.25em;
+        padding: 0 1.75em 0 1.25em !important;
+
+        @include md.dir(rtl) {
+            padding: 0 1.25em 0 1.75em !important;
+        }
+
+        &::after {
+            @include md.type('title-medium');
+
+            content: attr(title);
+            white-space: nowrap;
+            margin: 0 0 0 0.4em;
+
+            @include md.dir(rtl) {
+                margin: 0 0.4em 0 0;
+            }
+        }
+    }
+
+    .mainDetailButtons > .btnPlay .detailButton-icon,
+    .mainDetailButtons > .btnReplay .detailButton-icon {
+        font-size: 1.9em !important;
+    }
+
+    // The resume button already plays the item, so the separate replay button stays an icon button
+    .mainDetailButtons > .btnPlay:not(.hide) + .btnReplay {
+        @include md.color(background-color, 'surface-container-highest');
+        @include md.color(color, 'on-surface-variant');
+        @include md.interactive('on-surface-variant');
+
+        width: 3.25em;
+        padding: 0 !important;
+
+        &::after {
+            content: none;
+        }
+
+        .detailButton-icon {
+            font-size: inherit !important;
+        }
+    }
+
+    // Track selection: filled dropdown fields with the label inside, side by side on wide screens
+    .trackSelections:not(.hide) {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 64em;
+        margin: 0.25em 0 1em;
+    }
+
+    .trackSelections .selectContainer:not(.hide) {
+        display: block;
+        position: relative;
+        flex: 1 1 15em;
+        min-width: 0;
+        max-width: 30em;
+        margin: 0 0.75em 0.75em 0 !important;
+
+        @include md.dir(rtl) {
+            margin: 0 0 0.75em 0.75em !important;
+        }
+
+        @include md.layout(mobile) {
+            flex-basis: 100%;
+            max-width: none;
+            margin: 0 0 0.75em !important;
+        }
+    }
+
+    .trackSelections .selectContainer .selectLabel {
+        @include md.type('body-small');
+
+        position: absolute;
+        z-index: 1;
+        top: 8px;
+        left: 16px;
+        right: 48px;
+        margin: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        pointer-events: none;
+
+        @include md.dir(rtl) {
+            left: 48px;
+            right: 16px;
+            margin: 0;
+        }
+    }
+
+    .trackSelections .selectContainer .detailTrackSelect {
+        @include md.type('body-large');
+        @include md.color(background, 'surface-container-high');
+        @include md.color(color, 'on-surface');
+        @include md.shape('medium');
+        @include md.interactive('on-surface');
+
+        height: 56px;
+        padding: 22px 48px 6px 16px;
+        box-shadow: none;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        transition: md.transition(background-color, 'short4');
+
+        @include md.dir(rtl) {
+            padding: 22px 16px 6px 48px;
+        }
+
+        &:focus {
+            @include md.focus-ring;
+
+            box-shadow: none;
+        }
+    }
+
+    // A single track (always the case for video) is shown as a read-only field
+    .trackSelections .selectContainer .detailTrackSelect[disabled] {
+        @include md.color(background, 'surface-container', 1, true);
+        @include md.color(color, 'on-surface-variant', 1, true);
+
+        cursor: default;
+    }
+
+    .trackSelections .selectContainer .selectArrowContainer {
+        top: 50%;
+        margin-top: -12px;
+        line-height: 0;
+
+        @include md.dir(ltr) {
+            right: 12px;
+        }
+
+        @include md.dir(rtl) {
+            left: 12px;
+        }
+    }
+
+    .trackSelections .selectContainer .selectArrowContainer .selectArrow {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    // Overview
+    .tagline {
+        @include md.type('title-medium');
+        @include md.color(color, 'on-surface');
+    }
+
+    .detailSectionContent .overview {
+        @include md.type('body-large');
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    // Genres, studios, directors and writers as chips
+    .detailsGroupItem {
+        align-items: baseline;
+    }
+
+    .detailsGroupItem .label {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .detailsGroupItem .focuscontainer-x {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .detailsGroupItem-separator {
+        display: none;
+    }
+
+    .detailsGroupItem-link {
+        @include assist-chip;
+        @include md.interactive('on-surface');
+
+        margin: 0 0.4em 0.4em 0;
+        text-decoration: none;
+
+        @include md.dir(rtl) {
+            margin: 0 0 0.4em 0.4em;
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Section shortcuts (components/itemDetails/sectionNav.ts)
+    .detailSectionNav {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-top: 1em;
+        padding-bottom: 0.5em;
+    }
+
+    .detailSectionNav-chip {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface-variant');
+        @include md.color(border-color, 'outline');
+        @include md.shape('small');
+        @include md.interactive('on-surface-variant');
+
+        flex-shrink: 0;
+        height: 32px;
+        padding: 0 1em;
+        margin: 0 0.5em 0 0;
+        background-color: transparent;
+        border-width: 1px;
+        border-style: solid;
+        cursor: pointer;
+        white-space: nowrap;
+
+        @include md.dir(rtl) {
+            margin: 0 0 0 0.5em;
+        }
+
+        &:focus {
+            @include md.focus-ring(1px);
+        }
+    }
+
+    .detailVerticalSection .sectionTitle {
+        scroll-margin-top: 5em;
+    }
+}

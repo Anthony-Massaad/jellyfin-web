@@ -155,7 +155,7 @@ const LibraryToolbar: FC = () => {
 
                     <Stack
                         direction='row'
-                        spacing={1}
+                        spacing={2}
                         sx={{
                             justifyContent: {
                                 xs: 'auto',

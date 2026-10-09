@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use '../../styles/md3/palettes.generated' as palettes;
+
+/* The "Forest" theme is generated from an MD3 seed color, so the legacy fallbacks reuse its color roles */
+@use '../_base/theme' with (
+    // Color palette
+    $background-default: map.get(palettes.$forest, 'surface'),
+    $background-paper: map.get(palettes.$forest, 'surface-container'),
+    $primary-main: map.get(palettes.$forest, 'primary'),
+    $primary-dark: map.get(palettes.$forest, 'primary-container'),
+    $primary-light: map.get(palettes.$forest, 'primary'),
+    $primary-contrastText: map.get(palettes.$forest, 'on-primary'),
+    $text-primary: map.get(palettes.$forest, 'on-surface'),
+    $text-secondary: map.get(palettes.$forest, 'on-surface-variant'),
+    $divider: map.get(palettes.$forest, 'outline-variant'),
+
+    // Components
+    $appBar-defaultBg: map.get(palettes.$forest, 'surface-container'),
+    $button-inheritContainedBg: map.get(palettes.$forest, 'surface-container-highest'),
+    $button-inheritContainedHoverBg: map.get(palettes.$forest, 'surface-container-high'),
+    $snackbarContent-bg: map.get(palettes.$forest, 'inverse-surface'),
+    $snackbarContent-color: map.get(palettes.$forest, 'inverse-on-surface'),
+    $secondary-main: map.get(palettes.$forest, 'secondary'),
+    $surface-overlay: map.get(palettes.$forest, 'surface-container-low')
+);
+
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'forest');

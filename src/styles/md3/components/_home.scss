@@ -1,0 +1,502 @@
+// MD3 home screen: spotlight (hero), library tiles and library buttons.
+
+@use '../functions' as md;
+
+$spotlight-gutter: 3.3%;
+
+/// The spotlight scrim on phones: vertical only, since the text sits below the artwork
+@mixin -phone-scrim {
+    @include md.dual(
+        background-image,
+        linear-gradient(to top, md.c('surface', 0.85, true) 0%, md.c('surface', 0.5, true) 40%, md.c('surface', 0, true) 62%),
+        linear-gradient(to top, md.c('surface', 0.85) 0%, md.c('surface', 0.5) 40%, md.c('surface', 0) 62%)
+    );
+}
+
+#{md.$scope} {
+    // Spotlight (components/homesections/sections/spotlight.ts)
+    .homeSpotlightContainer {
+        margin-bottom: 1em;
+    }
+
+    .homeSpotlight {
+        position: relative;
+        overflow: hidden;
+        height: 56.25vw;
+        min-height: 26em;
+        max-height: 80vh;
+
+        @media all and (max-width: 50em) {
+            height: 130vw;
+            max-height: 82vh;
+        }
+
+        @include md.tv {
+            height: 62vh;
+            min-height: 0;
+        }
+    }
+
+    .homeSpotlight-slides {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    // Changing items: the current one fades out (-leaving), then the next one fades in.
+    // The fade-out duration matches FADE_OUT_DURATION in spotlight.ts.
+    .homeSpotlight-slide {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+    }
+
+    .homeSpotlight-slide-active {
+        opacity: 1;
+        z-index: 1;
+        transition: md.transition(opacity, 'extra-long2', 'emphasized-decelerate');
+    }
+
+    .homeSpotlight-slide-active.homeSpotlight-slide-leaving {
+        opacity: 0;
+        transition: md.transition(opacity, 'medium4', 'standard-accelerate');
+    }
+
+    // Only the active slide is focusable (focusManager ignores elements that are not rendered)
+    .homeSpotlight-slide:not(.homeSpotlight-slide-active) .homeSpotlight-content {
+        display: none;
+    }
+
+    .homeSpotlight-backdrop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+    }
+
+    // The artwork and its scrim fade out at the bottom, so the spotlight blends into the page background
+    // (including the ambient glow) instead of ending on a solid color. The text is not masked.
+    .homeSpotlight-backdrop,
+    .homeSpotlight-scrim {
+        mask-image: linear-gradient(to bottom, #000 72%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    // Phones: the spotlight is taller than wide, so a landscape backdrop covering it would be cropped heavily.
+    // The artwork keeps its 16:9 frame at the top and fades out, with the text below it over the page background.
+    @media all and (max-width: 50em) {
+        .homeSpotlight-backdrop {
+            bottom: auto;
+            height: 56.25vw;
+            mask-image: linear-gradient(to bottom, #000 55%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .homeSpotlight-slide-active .homeSpotlight-backdrop {
+            transform-origin: center top;
+        }
+    }
+
+    // Fades the artwork into the page and keeps the text legible
+    .homeSpotlight-scrim {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        @include md.dual(
+            background-image,
+            (linear-gradient(to top, md.c('surface', 1, true) 0%, md.c('surface', 0.7, true) 22%, md.c('surface', 0, true) 55%), linear-gradient(to right, md.c('surface', 0.9, true) 0%, md.c('surface', 0.4, true) 35%, md.c('surface', 0, true) 65%)),
+            (linear-gradient(to top, md.c('surface') 0%, md.c('surface', 0.7) 22%, md.c('surface', 0) 55%), linear-gradient(to right, md.c('surface', 0.9) 0%, md.c('surface', 0.4) 35%, md.c('surface', 0) 65%))
+        );
+
+        @include md.dir(rtl) {
+            @include md.dual(
+                background-image,
+                (linear-gradient(to top, md.c('surface', 1, true) 0%, md.c('surface', 0.7, true) 22%, md.c('surface', 0, true) 55%), linear-gradient(to left, md.c('surface', 0.9, true) 0%, md.c('surface', 0.4, true) 35%, md.c('surface', 0, true) 65%)),
+                (linear-gradient(to top, md.c('surface') 0%, md.c('surface', 0.7) 22%, md.c('surface', 0) 55%), linear-gradient(to left, md.c('surface', 0.9) 0%, md.c('surface', 0.4) 35%, md.c('surface', 0) 65%))
+            );
+        }
+
+        @media all and (max-width: 50em) {
+            @include -phone-scrim;
+
+            @include md.dir(rtl) {
+                @include -phone-scrim;
+            }
+        }
+    }
+
+    .homeSpotlight-content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 5em;
+        max-width: 40em;
+
+        @include md.dir(rtl) {
+            left: auto;
+        }
+
+        @media all and (max-width: 50em) {
+            bottom: 4em;
+        }
+    }
+
+    // Motion (not in the TV layout, to keep low-end devices smooth; reduced motion is handled in _base)
+    .homeSpotlight-slide-active {
+        @include md.not-tv {
+            // Slow zoom on the artwork
+            .homeSpotlight-backdrop {
+                animation: md3-spotlight-zoom 16s cubic-bezier(0.2, 0, 0, 1) both;
+            }
+
+            // The text rises in, one line after another
+            .homeSpotlight-content > * {
+                animation: md3-spotlight-rise 700ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+            }
+
+            @for $i from 2 through 4 {
+                .homeSpotlight-content > :nth-child(#{$i}) {
+                    animation-delay: #{($i - 1) * 70}ms;
+                }
+            }
+        }
+    }
+
+    .homeSpotlight-title {
+        @include md.type('display-medium');
+        @include md.color(color, 'on-surface');
+
+        margin: 0 0 0.3em;
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+
+        @media all and (max-width: 50em) {
+            @include md.type('headline-large');
+        }
+    }
+
+    .homeSpotlight-title-logo {
+        line-height: 0;
+        margin-bottom: 0.6em;
+        text-shadow: none;
+    }
+
+    .homeSpotlight-logo {
+        max-width: 72%;
+        max-height: 8em;
+        filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.45));
+
+        @media all and (max-width: 50em) {
+            max-height: 5em;
+        }
+    }
+
+    // One line of metadata: "2024 · TV-MA · ★ 7.9 · Drama · Crime · Action"
+    .homeSpotlight-meta {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface', 0.86);
+
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 0.85em;
+    }
+
+    .homeSpotlight-mediaInfo {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        > .mediaInfoItem {
+            display: flex;
+            align-items: center;
+            margin: 0.15em 0.85em 0.15em 0;
+
+            @include md.dir(rtl) {
+                margin: 0.15em 0 0.15em 0.85em;
+            }
+        }
+
+        > .mediaInfoOfficialRating {
+            @include md.color(border-color, 'on-surface', 0.6);
+            @include md.shape('extra-small');
+
+            border-width: 1px;
+            border-style: solid;
+            padding: 0.05em 0.45em;
+            font-size: 0.85em;
+        }
+
+        .starIcon {
+            font-size: 1.25em;
+        }
+    }
+
+    .homeSpotlight-genres {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .homeSpotlight-genre {
+        margin: 0.15em 0;
+
+        &::before {
+            content: '\2022';
+            margin: 0 0.6em;
+            opacity: 0.6;
+        }
+    }
+
+    // No separator at the start of the line (no media info, or the genres wrapped onto their own line on narrow screens)
+    .homeSpotlight-mediaInfo:empty + .homeSpotlight-genres > .homeSpotlight-genre:first-child::before {
+        content: none;
+    }
+
+    .homeSpotlight-overview {
+        @include md.type('body-large');
+        @include md.color(color, 'on-surface', 0.8);
+
+        overflow: hidden;
+        margin: 0 0 1.5em;
+
+        /* NOTE: line clamping is non-standard and requires vendor-prefixed rules to function */
+        display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+
+        @media all and (max-width: 50em) {
+            -webkit-line-clamp: 2;
+        }
+    }
+
+    .homeSpotlight-actions {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .homeSpotlight-button {
+        @include md.type('title-medium');
+        @include md.shape('full');
+
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        padding: 0 1.75em 0 1.25em;
+        margin: 0 0.75em 0.5em 0;
+        transition: md.transition((background-color, box-shadow, transform), 'short4');
+
+        > .material-icons {
+            font-size: 1.6em;
+            margin-right: 0.35em;
+        }
+
+        @include md.dir(rtl) {
+            padding: 0 1.25em 0 1.75em;
+            margin: 0 0 0.5em 0.75em;
+
+            > .material-icons {
+                margin-right: 0;
+                margin-left: 0.35em;
+            }
+        }
+
+        @include md.not-tv {
+            &:active {
+                transform: scale(0.97);
+            }
+        }
+
+        @include md.tv {
+            min-height: 2.6em;
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Filled button
+    .homeSpotlight-play {
+        @include md.color(background, 'primary');
+        @include md.color(color, 'on-primary');
+        @include md.interactive('on-primary');
+    }
+
+    // Translucent tonal button over the artwork
+    .homeSpotlight-info {
+        @include md.color(background, 'surface-container-highest', 0.6);
+        @include md.color(color, 'on-surface');
+        @include md.interactive('on-surface');
+
+        backdrop-filter: blur(12px);
+    }
+
+    // Segmented progress indicator: the active segment fills up until the next item
+    .homeSpotlight-pager {
+        position: absolute;
+        z-index: 2;
+        bottom: 1.75em;
+        left: $spotlight-gutter;
+        display: flex;
+        align-items: center;
+
+        @include md.dir(rtl) {
+            left: auto;
+            right: $spotlight-gutter;
+        }
+    }
+
+    .homeSpotlight-indicator {
+        position: relative;
+        width: 1.75em;
+        height: 20px;
+        padding: 0;
+        margin: 0 3px;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        transition: md.transition(width, 'medium4', 'emphasized');
+
+        // Track
+        &::before {
+            @include md.color(background-color, 'on-surface', 0.28);
+            @include md.shape('full');
+
+            content: '';
+            position: absolute;
+            top: 7px;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+
+        &:hover::before {
+            @include md.color(background-color, 'on-surface', 0.45);
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+
+        @include md.shape('extra-small');
+
+        @include md.tv {
+            width: 1.5em;
+        }
+    }
+
+    .homeSpotlight-indicatorFill {
+        @include md.color(background-color, 'on-surface');
+        @include md.shape('full');
+
+        position: absolute;
+        top: 7px;
+        left: 0;
+        right: 0;
+        height: 6px;
+        transform: scaleX(0);
+        transform-origin: left center;
+
+        @include md.dir(rtl) {
+            transform-origin: right center;
+        }
+    }
+
+    .homeSpotlight-indicator-active {
+        width: 3.5em;
+
+        @include md.tv {
+            width: 3em;
+        }
+    }
+
+    .homeSpotlight-indicator-done .homeSpotlight-indicatorFill,
+    .homeSpotlight-indicator-active .homeSpotlight-indicatorFill {
+        transform: scaleX(1);
+    }
+
+    // The duration is set inline from ROTATION_INTERVAL in spotlight.ts
+    .homeSpotlight-autoplay .homeSpotlight-indicator-active .homeSpotlight-indicatorFill {
+        animation: md3-spotlight-progress 5s linear both;
+    }
+
+    .homeSpotlight-held .homeSpotlight-indicator-active .homeSpotlight-indicatorFill {
+        animation-play-state: paused;
+    }
+
+    // Library tiles: large tiles with the library name over the artwork
+    .homeLibraryTiles .cardImageContainer,
+    .homeLibraryTiles .cardContent,
+    .homeLibraryTiles .cardOverlayContainer,
+    .homeLibraryTiles .cardPadder {
+        @include md.shape('large');
+    }
+
+    .homeLibraryTiles .innerCardFooter {
+        @include md.dual(border-radius, 0 0 16px 16px, 0 0 var(--md-sys-shape-corner-large) var(--md-sys-shape-corner-large));
+    }
+
+    .homeLibraryTiles .innerCardFooter > .cardText {
+        @include md.type('title-medium');
+
+        padding: 0.75em 1em;
+        color: #fff;
+    }
+
+    // Library buttons: filled tonal buttons
+    .homeLibraryButton {
+        @include md.color(background, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.shape('large');
+        @include md.type('title-small');
+        @include md.interactive('on-secondary-container');
+
+        padding: 1em 1.25em;
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+}
+
+@keyframes md3-spotlight-zoom {
+    from {
+        transform: scale(1.08);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes md3-spotlight-rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes md3-spotlight-progress {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
