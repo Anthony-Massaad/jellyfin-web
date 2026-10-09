@@ -1,0 +1,578 @@
+// MD3 user settings menu (apps/legacy/routes/user/settings): a profile header and grouped, connected settings rows.
+
+@use '../functions' as md;
+
+#{md.$scope} {
+    .settingsPage {
+        max-width: 46em;
+        margin: 0 auto;
+    }
+
+    // Profile header: picture, name and details, with an edit button
+    .settingsProfile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5em 1em 2em;
+
+        @include md.not-tv {
+            animation: md3-settings-rise 560ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+        }
+    }
+
+    .settingsProfile-avatar {
+        @include md.color(background-color, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 7.5em;
+        height: 7.5em;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-bottom: 1em;
+
+        @include md.dual(
+            box-shadow,
+            (0 0 0 4px md.c('surface', 1, true), 0 0 0 6px md.c('primary', 0.5, true), 0 16px 40px -12px md.c('primary', 0.45, true)),
+            (0 0 0 4px md.c('surface'), 0 0 0 6px md.c('primary', 0.5), 0 16px 40px -12px md.c('primary', 0.45))
+        );
+
+        @include md.not-tv {
+            animation: md3-settings-pop 640ms cubic-bezier(0.34, 1.36, 0.64, 1) both;
+        }
+    }
+
+    .settingsProfile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .settingsProfile-initial {
+        @include md.type('display-medium');
+
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        font-weight: 500;
+    }
+
+    .settingsProfile-name {
+        @include md.type('headline-medium');
+        @include md.color(color, 'on-surface');
+
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .settingsProfile-details {
+        @include md.type('body-large');
+        @include md.color(color, 'on-surface-variant');
+
+        margin: 0.25em 0 0;
+    }
+
+    .settingsProfile-edit {
+        @include md.type('label-large');
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.interactive('on-secondary-container');
+        @include md.shape-morph;
+
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 1.4em 0 1em;
+        margin: 1.25em 0 0;
+        text-decoration: none;
+        transition: md.transition(background-color, 'short4'), md.transition(border-radius, 'medium2', 'expressive-spatial');
+
+        > .material-icons {
+            font-size: 1.3em;
+            margin: 0 0.4em 0 0;
+        }
+
+        @include md.dir(rtl) {
+            padding: 0 1em 0 1.4em;
+
+            > .material-icons {
+                margin: 0 0 0 0.4em;
+            }
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Groups: connected rows with large outer corners. The container clips the corners, so the outer rows are rounded
+    // even when some rows are hidden (apps/modern/AppOverrides.scss hides a few).
+    .settingsGroup {
+        margin-bottom: 1.75em;
+    }
+
+    .settingsGroup-title {
+        @include md.type('title-small');
+        @include md.color(color, 'primary');
+
+        margin: 0 0 0.6em;
+        padding: 0 1.25em;
+    }
+
+    .settingsGroup-items {
+        @include md.shape('extra-large');
+
+        overflow: hidden;
+    }
+
+    .settingsItem {
+        @include md.glass('surface-container', 0.6, 16px);
+        @include md.color(color, 'on-surface');
+        @include md.shape('extra-small');
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: start;
+        min-height: 72px;
+        padding: 0.75em 1em 0.75em 1.25em;
+        margin: 0 0 2px;
+        text-decoration: none;
+        transition: md.transition((background-color, color), 'medium2', 'expressive-effects'), md.transition(border-radius, 'medium2', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            padding: 0.75em 1.25em 0.75em 1em;
+        }
+
+        @include md.not-tv {
+            animation: md3-settings-rise 480ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+            animation-delay: calc(80ms + var(--settings-item-index, 0) * 35ms);
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                @include md.color(background-color, 'surface-container-highest');
+            }
+        }
+
+        &:active {
+            @include md.shape('large');
+        }
+
+        // Inset ring, since the group clips the outside
+        &:focus {
+            @include md.focus-ring(-3px);
+            @include md.color(background-color, 'surface-container-highest');
+        }
+    }
+
+    .settingsItem-icon {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 22px;
+        margin: 0 1em 0 0;
+        transition: md.transition(border-radius, 'medium4', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            margin: 0 0 0 1em;
+        }
+    }
+
+    // The icon badge morphs into a rounded square while the row is hovered or focused
+    .settingsItem:hover .settingsItem-icon,
+    .settingsItem:focus .settingsItem-icon {
+        border-radius: 12px;
+    }
+
+    .settingsItem-text {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .settingsItem-title {
+        @include md.type('title-medium');
+
+        font-size: 1.0625rem;
+    }
+
+    .settingsItem-description {
+        @include md.type('body-medium');
+        @include md.color(color, 'on-surface-variant');
+
+        margin-top: 0.1em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .settingsItem-chevron {
+        @include md.color(color, 'on-surface-variant');
+
+        flex-shrink: 0;
+        margin: 0 0 0 0.5em;
+        transition: md.transition(transform, 'medium2', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            margin: 0 0.5em 0 0;
+            transform: scaleX(-1);
+        }
+    }
+
+    .settingsItem:hover .settingsItem-chevron,
+    .settingsItem:focus .settingsItem-chevron {
+        transform: translateX(4px);
+
+        @include md.dir(rtl) {
+            transform: scaleX(-1) translateX(4px);
+        }
+    }
+
+    // Sign out stands apart
+    .settingsItem.btnLogout .settingsItem-icon {
+        @include md.color(background-color, 'error-container');
+        @include md.color(color, 'on-error-container');
+    }
+
+    // Profile page (apps/legacy/routes/user/userprofile.tsx): the picture and name, then the password in a card
+    .profilePage {
+        max-width: 40em;
+        margin: 0 auto;
+        padding-top: 1em;
+    }
+
+    .profileHeader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1em 1em 2em;
+
+        @include md.not-tv {
+            animation: md3-settings-rise 560ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+        }
+    }
+
+    // The picture: click it to choose a new one (the file input covers it)
+    .profileAvatar {
+        position: relative;
+        width: 8.5em;
+        height: 8.5em;
+        margin-bottom: 1.1em;
+        border-radius: 50%;
+        cursor: pointer;
+
+        @include md.dual(
+            box-shadow,
+            (0 0 0 4px md.c('surface', 1, true), 0 0 0 6px md.c('primary', 0.5, true), 0 16px 40px -12px md.c('primary', 0.45, true)),
+            (0 0 0 4px md.c('surface'), 0 0 0 6px md.c('primary', 0.5), 0 16px 40px -12px md.c('primary', 0.45))
+        );
+
+        @include md.not-tv {
+            animation: md3-settings-pop 640ms cubic-bezier(0.34, 1.36, 0.64, 1) both;
+        }
+    }
+
+    .profileAvatar-image {
+        @include md.color(background-color, 'primary-container');
+
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        transition: md.transition(transform, 'long2', 'expressive-spatial');
+    }
+
+    .profileAvatar-badge {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+
+        position: absolute;
+        right: 0.15em;
+        bottom: 0.15em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2em;
+        height: 2.2em;
+        border-radius: 50%;
+        font-size: 1.1em;
+        pointer-events: none;
+        transition: md.transition(transform, 'medium4', 'expressive-spatial');
+
+        @include md.dual(
+            box-shadow,
+            0 0 0 3px md.c('surface', 1, true),
+            0 0 0 3px md.c('surface')
+        );
+
+        @include md.dir(rtl) {
+            right: auto;
+            left: 0.15em;
+        }
+    }
+
+    .profileAvatar-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .profileAvatar:hover {
+            .profileAvatar-image {
+                transform: scale(1.04);
+            }
+
+            .profileAvatar-badge {
+                transform: scale(1.12) rotate(-8deg);
+            }
+        }
+    }
+
+    .profileAvatar-input:focus-visible + .profileAvatar-badge,
+    .profileAvatar:focus-within .profileAvatar-badge {
+        @include md.focus-ring(2px);
+    }
+
+    .profileHeader-name {
+        @include md.type('headline-medium');
+        @include md.color(color, 'on-surface');
+
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .profileHeader-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1em;
+    }
+
+    .profileHeader-button {
+        min-height: 40px;
+        padding: 0 1.5em;
+        margin: 0 0.3em;
+    }
+
+    // The password form in a glass card
+    .profileCard {
+        @include md.glass('surface-container', 0.6, 20px);
+        @include md.shape('extra-large');
+
+        padding: 1.5em 1.5em 0.5em;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+        @include md.not-tv {
+            animation: md3-settings-rise 520ms cubic-bezier(0.05, 0.7, 0.1, 1) 80ms both;
+        }
+
+        @media all and (max-width: 35em) {
+            padding: 1.25em 1.1em 0.25em;
+        }
+
+        // The card is empty when the password cannot be changed here
+        &:has(.updatePasswordForm.hide) {
+            display: none;
+        }
+
+        form {
+            max-width: none;
+            padding-top: 0;
+            margin: 0 !important;
+        }
+
+        .inputContainer {
+            margin-bottom: 1.1em;
+        }
+
+        .inputLabel {
+            @include md.type('label-large');
+            @include md.color(color, 'on-surface-variant');
+
+            margin-bottom: 0.4em;
+        }
+
+        .emby-input {
+            @include md.shape('medium');
+
+            min-height: 48px;
+            box-shadow: none;
+
+            &:focus {
+                @include md.focus-ring;
+
+                box-shadow: none;
+            }
+        }
+
+        // The form adds a line break before its buttons
+        br {
+            display: none;
+        }
+
+        .emby-button.block {
+            min-height: 48px;
+            margin: 0.5em 0 1em;
+        }
+    }
+
+    .profileCard-title {
+        @include md.type('title-medium');
+        @include md.color(color, 'primary');
+
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        font-weight: 500;
+        margin: 0 0 1em;
+    }
+
+    // Accent color picker (apps/modern/features/preferences/components/AccentPicker.tsx)
+    .accentPicker {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    .accentPicker-label {
+        @include md.type('title-medium');
+        @include md.color(color, 'on-surface');
+
+        padding: 0;
+        margin-bottom: 0.75em;
+    }
+
+    .accentPicker-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -0.3em;
+    }
+
+    .accentPicker-help {
+        @include md.type('body-small');
+        @include md.color(color, 'on-surface-variant');
+
+        margin: 0.6em 0 0;
+    }
+
+    .accentSwatch {
+        position: relative;
+        display: block;
+        padding: 0.3em;
+        cursor: pointer;
+    }
+
+    // The radio button stays focusable and readable by screen readers, but is not drawn
+    .accentSwatch-input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .accentSwatch-color {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+        transition: md.transition((border-radius, transform), 'medium4', 'expressive-spatial');
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .accentSwatch:hover .accentSwatch-color {
+            transform: scale(1.08);
+        }
+    }
+
+    .accentSwatch-check {
+        @include md.color(background-color, 'surface');
+        @include md.color(color, 'on-surface');
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        font-size: 18px;
+        opacity: 0;
+        transform: scale(0.4);
+        transition: md.transition(opacity, 'short4'), md.transition(transform, 'medium4', 'expressive-spatial');
+    }
+
+    // Selected: the swatch morphs into a rounded square and shows a check
+    .accentSwatch-input:checked + .accentSwatch-color {
+        border-radius: 16px;
+
+        .accentSwatch-check {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .accentSwatch-input:focus-visible + .accentSwatch-color {
+        @include md.focus-ring(3px);
+    }
+
+    // Remote navigation (no :focus-visible on old TV browsers)
+    .accentSwatch-input:focus + .accentSwatch-color {
+        @include md.tv {
+            @include md.focus-ring(3px);
+        }
+    }
+}
+
+@keyframes md3-settings-rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes md3-settings-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

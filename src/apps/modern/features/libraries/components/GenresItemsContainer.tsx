@@ -1,7 +1,7 @@
 import type { BaseItemKind } from '@jellyfin/sdk/lib/generated-client/models/base-item-kind';
 import type { CollectionType } from '@jellyfin/sdk/lib/generated-client/models/collection-type';
 import Box from '@mui/material/Box';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import NoItemsMessage from 'components/common/NoItemsMessage';
@@ -10,7 +10,6 @@ import type { ParentId } from 'types/library';
 
 import { useGenres } from '../hooks/api/useGenres';
 import GenresSectionContainer from './GenresSectionContainer';
-import AlphabetPicker from './AlphabetPicker';
 
 interface GenresItemsContainerProps {
     parentId: ParentId;
@@ -23,7 +22,7 @@ const GenresItemsContainer: FC<GenresItemsContainerProps> = ({
     collectionType,
     itemType
 }) => {
-    const [alphabet, setAlphabet] = useState<string | null>();
+    // The genres are browsed as rows, without the alphabet picker
     const {
         isLoading,
         data,
@@ -32,8 +31,7 @@ const GenresItemsContainer: FC<GenresItemsContainerProps> = ({
         isFetchingNextPage
     } = useGenres({
         parentId,
-        includeItemTypes: itemType,
-        alphabet
+        includeItemTypes: itemType
     });
 
     const genres = useMemo(
@@ -50,11 +48,6 @@ const GenresItemsContainer: FC<GenresItemsContainerProps> = ({
             void fetchNextPage();
         }
     }, [isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-    // No genres at all (no letter filter active) - nothing to pick from
-    if (!isLoading && !genres.length && alphabet == null) {
-        return <NoItemsMessage message='MessageNoGenresAvailable' />;
-    }
 
     const renderGenres = () => {
         if (isLoading) {
@@ -83,13 +76,7 @@ const GenresItemsContainer: FC<GenresItemsContainerProps> = ({
         );
     };
 
-    return (
-        <>
-            <AlphabetPicker value={alphabet} onChange={setAlphabet} />
-
-            {renderGenres()}
-        </>
-    );
+    return renderGenres();
 };
 
 export default GenresItemsContainer;

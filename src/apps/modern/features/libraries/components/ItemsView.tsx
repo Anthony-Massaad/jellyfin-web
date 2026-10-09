@@ -1,8 +1,7 @@
 import { ImageType } from '@jellyfin/sdk/lib/generated-client/models/image-type';
-import { ItemSortBy } from '@jellyfin/sdk/lib/generated-client/models/item-sort-by';
 import Box from '@mui/material/Box';
 import classNames from 'classnames';
-import React, { type FC, SetStateAction, useCallback, useMemo } from 'react';
+import React, { type FC, SetStateAction, useCallback, useEffect, useMemo } from 'react';
 
 import { useLibrary } from 'apps/modern/features/libraries/hooks/useLibrary';
 import { getDefaultLibraryViewSettings } from 'apps/modern/features/libraries/utils/settings';
@@ -18,9 +17,6 @@ import type { CardOptions } from 'types/cardOptions';
 import { type LibraryViewSettings, ViewMode } from 'types/library';
 import { LibraryTab } from 'types/libraryTab';
 import type { ListOptions } from 'types/listOptions';
-
-import AlphabetPicker from './AlphabetPicker';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 const ItemsView: FC = () => {
     const {
@@ -38,15 +34,20 @@ const ItemsView: FC = () => {
         () => setViewSettings ?? ((action: SetStateAction<LibraryViewSettings>) => { /* no-op */ }),
         [setViewSettings]
     );
-    const { isAlphabetPickerEnabled, noItemsMessage } = content ?? {};
-    // Check if the alphabet picker will fit in the current viewport
-    const isAlphabetPickerSupported = useMediaQuery(t => [
-        // Extra small screens have no padding around letters but larger AppBar
-        `${t.breakpoints.down('sm')} and (min-height: 575px)`,
-        // Small screens have padding around letters but smaller AppBar
-        // NOTE: Helper methods down/up add "@media" to the query string so use the value directly
-        `(min-width: ${t.breakpoints.values.sm}px) and (min-height: 610px)`
-    ].join(', '));
+    const { noItemsMessage } = content ?? {};
+
+    // The library views have no alphabet picker, so clear a letter that was picked before it was removed;
+    // otherwise the items would stay filtered with no way to change it
+    const savedAlphabet = libraryViewSettings.Alphabet;
+    useEffect(() => {
+        if (savedAlphabet) {
+            setLibraryViewSettings(prevState => ({
+                ...prevState,
+                StartIndex: 0,
+                Alphabet: null
+            }));
+        }
+    }, [ savedAlphabet, setLibraryViewSettings ]);
 
     const { __legacyApiClient__, user } = useApi();
 
@@ -183,16 +184,6 @@ const ItemsView: FC = () => {
         noItemsMessage
     ]);
 
-    const handleAlphabetChange = useCallback((newValue: string | null | undefined) => {
-        setLibraryViewSettings((prevState) => ({
-            ...prevState,
-            StartIndex: 0,
-            Alphabet: newValue
-        }));
-    }, [setLibraryViewSettings]);
-
-    const hasSortName = !libraryViewSettings.SortBy.includes(ItemSortBy.Random);
-
     const itemsContainerClass = classNames(
         'padded-left padded-right',
         libraryViewSettings.ViewMode === ViewMode.ListView ?
@@ -202,13 +193,6 @@ const ItemsView: FC = () => {
 
     return (
         <Box className='padded-bottom-page'>
-            {isAlphabetPickerSupported && isAlphabetPickerEnabled && hasSortName && (
-                <AlphabetPicker
-                    value={libraryViewSettings.Alphabet}
-                    onChange={handleAlphabetChange}
-                />
-            )}
-
             {(!itemsResult || itemsResult.isPending) ? (
                 <Loading />
             ) : (

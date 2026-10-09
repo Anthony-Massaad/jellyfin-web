@@ -1,0 +1,409 @@
+// MD3 search, library browsing and list views.
+
+@use '../functions' as md;
+
+#{md.$scope} {
+    // Library views (apps/modern/features/libraries/components/LibraryViewMenu.tsx): MD3 filter chips
+    .libraryViewChips {
+        flex-wrap: nowrap;
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 0.35em 0;
+    }
+
+    .libraryViewChip {
+        @include md.color(color, 'on-surface-variant');
+
+        flex-shrink: 0;
+        margin: 0 0.5em 0 0;
+        padding: 0 0.25em;
+        cursor: pointer;
+        font-family: inherit;
+
+        @include md.dir(rtl) {
+            margin: 0 0 0 0.5em;
+        }
+
+        &:focus-visible {
+            @include md.focus-ring(1px);
+        }
+    }
+
+    .libraryViewChip-selected {
+        @include md.color(color, 'on-secondary-container');
+
+        border-color: transparent;
+
+        .MuiChip-icon {
+            @include md.color(color, 'on-secondary-container');
+
+            font-size: 18px;
+        }
+    }
+
+    // Search (apps/legacy/features/search): a large glass search field, genre chips and artwork tiles
+    .searchFields {
+        padding-top: 0.75em;
+        padding-bottom: 0.5em;
+    }
+
+    .searchFieldsInner {
+        @include md.glass('surface-container-high', 0.6, 20px);
+        @include md.shape('full');
+
+        max-width: 52em;
+        min-height: 64px;
+        padding: 0 0.5em 0 1.4em;
+        margin: 0.25em auto 1.25em;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        transition: md.transition(box-shadow, 'medium2', 'expressive-effects'), md.transition(transform, 'medium2', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            padding: 0 1.4em 0 0.5em;
+        }
+
+        // Focus: a primary outline with a soft glow, and a slight lift
+        &:focus-within {
+            @include md.dual(
+                box-shadow,
+                (inset 0 0 0 2px md.c('primary', 1, true), 0 0 0 6px md.c('primary', 0.16, true), 0 12px 32px -12px rgba(0, 0, 0, 0.5)),
+                (inset 0 0 0 2px md.c('primary'), 0 0 0 6px md.c('primary', 0.16), 0 12px 32px -12px rgba(0, 0, 0, 0.5))
+            );
+
+            @include md.not-tv {
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    .searchfields-icon {
+        @include md.color(color, 'on-surface-variant');
+
+        align-self: center;
+        font-size: 1.6em;
+        margin: 0 0.5em 0 0;
+        transition: md.transition(color, 'medium2', 'expressive-effects');
+
+        @include md.dir(rtl) {
+            margin: 0 0 0 0.5em;
+        }
+    }
+
+    .searchFieldsInner:focus-within .searchfields-icon {
+        @include md.color(color, 'primary');
+    }
+
+    // The input renders an empty label above the field, which would push the text below the icon
+    .searchFieldsInner .inputLabel {
+        display: none;
+    }
+
+    .searchFieldsInner .inputContainer {
+        display: flex;
+        align-items: center;
+    }
+
+    .searchFieldsInner .searchfields-txtSearch,
+    .searchFieldsInner .searchfields-txtSearch:focus {
+        @include md.type('title-medium');
+
+        font-size: 125%;
+        font-weight: 400;
+        line-height: 1.5;
+        padding: 0.6em 0.25em;
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .searchfields-clear {
+        @include md.color(color, 'on-surface-variant');
+        @include md.shape('full');
+        @include md.interactive('on-surface-variant');
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        padding: 0;
+        border: 0;
+        background-color: transparent;
+        cursor: pointer;
+        animation: md3-search-pop 260ms cubic-bezier(0.34, 1.36, 0.64, 1) both;
+
+        &:focus-visible {
+            @include md.focus-ring;
+        }
+    }
+
+    // Genre chips: glass pills in a row that scrolls sideways
+    .searchExploreSection {
+        margin-bottom: 1.5em;
+    }
+
+    .searchGenreChips {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-top: 0.35em;
+        padding-bottom: 0.5em;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    .searchGenreChip {
+        @include md.glass('surface-container-high', 0.55, 16px);
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface');
+        @include md.interactive('on-surface');
+        @include md.shape-morph;
+
+        flex-shrink: 0;
+        padding: 0.65em 1.3em;
+        margin: 0 0.6em 0 0;
+        text-decoration: none;
+        white-space: nowrap;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        transition: md.transition((background-color, color), 'medium2', 'expressive-effects'), md.transition((border-radius, transform), 'medium2', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            margin: 0 0 0 0.6em;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                @include md.not-tv {
+                    transform: translateY(-2px);
+                }
+            }
+        }
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Suggested titles: a responsive grid of landscape artwork tiles (margins instead of grid/gap for old TVs)
+    .searchTiles {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: -0.4em;
+    }
+
+    .searchTileWrapper {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 0.4em;
+
+        @media all and (min-width: 40em) {
+            width: 33.333%;
+        }
+
+        @media all and (min-width: 62.5em) {
+            width: 25%;
+        }
+
+        @media all and (min-width: 100em) {
+            width: 20%;
+        }
+
+        @include md.not-tv {
+            animation: md3-search-rise 520ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+            animation-delay: calc(var(--search-tile-index, 0) * 35ms);
+        }
+    }
+
+    .searchTile {
+        @include md.color(background-color, 'surface-container-high');
+        @include md.shape('large');
+
+        position: relative;
+        display: block;
+        overflow: hidden;
+        height: 0;
+        padding: 0 0 56.25%; // 16:9
+        margin: 0;
+        text-decoration: none;
+        color: #fff;
+        transition: md.transition((transform, box-shadow), 'long2', 'expressive-spatial');
+
+        // Legibility scrim for the title
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 60%;
+            background-image: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+            pointer-events: none;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                @include md.not-tv {
+                    transform: translateY(-4px) scale(1.04);
+                    box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.55);
+                }
+            }
+        }
+
+        &:focus {
+            @include md.focus-ring;
+
+            transform: scale(1.04);
+        }
+    }
+
+    .searchTile-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-size: cover;
+        background-position: center;
+        transition: md.transition(transform, 'extra-long2', 'expressive-effects');
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .searchTile:hover .searchTile-image {
+            transform: scale(1.06);
+        }
+    }
+
+    .searchTile-icon {
+        @include md.color(color, 'on-surface-variant');
+
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        font-size: 2.5em;
+        transform: translate(-50%, -50%);
+    }
+
+    .searchTile-title {
+        @include md.type('title-small');
+
+        position: absolute;
+        z-index: 1;
+        left: 0.9em;
+        right: 0.9em;
+        bottom: 0.7em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    // Loading placeholders with a shimmer
+    .searchTile-skeleton {
+        @include md.dual(
+            background-image,
+            linear-gradient(100deg, md.c('surface-container-high', 1, true) 30%, md.c('surface-container-highest', 1, true) 50%, md.c('surface-container-high', 1, true) 70%),
+            linear-gradient(100deg, md.c('surface-container-high') 30%, md.c('surface-container-highest') 50%, md.c('surface-container-high') 70%)
+        );
+
+        background-size: 300% 100%;
+        animation: md3-search-shimmer 1.4s linear infinite;
+
+        &::after {
+            content: none;
+        }
+    }
+
+    // Result rows rise in one after another
+    .searchResultsRow {
+        @include md.not-tv {
+            animation: md3-search-rise 520ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+            animation-delay: calc(var(--search-row-index, 0) * 60ms);
+        }
+    }
+
+    // Alphabet picker
+    .alphaPickerButton {
+        @include md.shape('full');
+        @include md.type('label-large');
+    }
+
+    .alphaPickerButton-selected {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+    }
+
+    .alphaPickerButton-tv:focus {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+    }
+
+    // Lists
+    .listItem-border {
+        @include md.color(border-color, 'outline-variant');
+
+        border-width: 0 0 1px;
+    }
+
+    .listItemImage,
+    .listItemImage .blurhash-canvas {
+        @include md.shape('small');
+    }
+
+    .listItemBodyText.secondary,
+    .listItemMediaInfo {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .listItem:hover {
+        @include md.color(background-color, 'on-surface', 0.08);
+    }
+
+    .listItem:focus {
+        @include md.color(background-color, 'on-surface', 0.12);
+    }
+
+    // Paging and view controls on legacy library pages
+    .listPaging {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface-variant');
+    }
+}
+
+@keyframes md3-search-rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes md3-search-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes md3-search-shimmer {
+    from {
+        background-position: 100% 0;
+    }
+
+    to {
+        background-position: 0 0;
+    }
+}

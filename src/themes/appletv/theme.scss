@@ -35,6 +35,9 @@ $header-gradient: linear-gradient(to right, #bcbcbc, #a7b4b7, #beb5a5, #adbec2, 
     $card-borderRadius: 0.5rem
 );
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'appletv');
+
 /* Override alpha picker selected colors */
 .alphaPickerButton-selected {
     background-color: var(--jf-palette-primary-main, palette.$primary-main);

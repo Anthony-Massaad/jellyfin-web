@@ -1,0 +1,24 @@
+// Material Design 3 layer for the user-facing app.
+//
+// Included by every theme in src/themes/<id>/theme.scss:
+//     @use '../../styles/md3' with ($theme: '<id>');
+//
+// All rules in ./components are nested under the scope selector so the dashboard and wizard are not affected.
+// This is enforced by src/styles/md3/md3Scope.test.ts.
+
+@forward 'functions' show $theme;
+
+@use 'roots';
+@use 'components/accents';
+@use 'components/base';
+@use 'components/navigation';
+@use 'components/cards';
+@use 'components/home';
+@use 'components/details';
+@use 'components/player';
+@use 'components/library';
+@use 'components/forms';
+@use 'components/preferences';
+@use 'components/dialogs';
+@use 'components/settings';
+@use 'components/expressive';

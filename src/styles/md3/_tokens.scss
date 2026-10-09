@@ -1,0 +1,95 @@
+// Material Design 3 system tokens that do not depend on the theme colors.
+// https://m3.material.io/foundations/design-tokens
+
+/// Every MD3 rule is nested under this selector so the dashboard and wizard (which never set it) are unaffected.
+/// The attribute is set on <html> by the user app layouts (see src/hooks/useMd3Scope.ts).
+$scope: '[data-md3]';
+
+// Shape scale
+$shape: (
+    'none': 0,
+    'extra-small': 4px,
+    'small': 8px,
+    'medium': 12px,
+    'large': 16px,
+    'extra-large': 28px,
+    'full': 9999px
+);
+
+// Motion easing
+$easing: (
+    'standard': cubic-bezier(0.2, 0, 0, 1),
+    'standard-decelerate': cubic-bezier(0, 0, 0, 1),
+    'standard-accelerate': cubic-bezier(0.3, 0, 1, 1),
+    'emphasized': cubic-bezier(0.2, 0, 0, 1),
+    'emphasized-decelerate': cubic-bezier(0.05, 0.7, 0.1, 1),
+    'emphasized-accelerate': cubic-bezier(0.3, 0, 0.8, 0.15),
+    // MD3 Expressive springs, approximated with cubic-bezier curves. "Spatial" curves overshoot slightly and are used
+    // for position, size and shape; "effects" curves do not overshoot and are used for color and opacity.
+    'expressive-spatial': cubic-bezier(0.34, 1.36, 0.64, 1),
+    'expressive-spatial-fast': cubic-bezier(0.42, 1.5, 0.4, 1),
+    'expressive-effects': cubic-bezier(0.31, 0.94, 0.34, 1)
+);
+
+// Motion duration
+$duration: (
+    'short1': 50ms,
+    'short2': 100ms,
+    'short3': 150ms,
+    'short4': 200ms,
+    'medium1': 250ms,
+    'medium2': 300ms,
+    'medium3': 350ms,
+    'medium4': 400ms,
+    'long1': 450ms,
+    'long2': 500ms,
+    'long3': 550ms,
+    'long4': 600ms,
+    'extra-long1': 700ms,
+    'extra-long2': 800ms,
+    'extra-long3': 900ms,
+    'extra-long4': 1000ms
+);
+
+// State layer opacities
+$state: (
+    'hover': 0.08,
+    'focus': 0.1,
+    'pressed': 0.1,
+    'dragged': 0.16
+);
+
+// Elevation shadows (used sparingly; MD3 prefers tonal surfaces)
+$elevation: (
+    0: none,
+    1: (0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)),
+    2: (0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)),
+    3: (0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15)),
+    4: (0 2px 3px rgba(0, 0, 0, 0.3), 0 6px 10px 4px rgba(0, 0, 0, 0.15)),
+    5: (0 4px 4px rgba(0, 0, 0, 0.3), 0 8px 12px 6px rgba(0, 0, 0, 0.15))
+);
+
+/// Medium (500) weight text reads its font stack from this custom property. It is only defined by
+/// styles/fonts.noto.scss, which adds a Latin "Noto Sans Medium" alias face. With system fonts, or on browsers without
+/// custom properties, the family is inherited. The alias keeps the dashboard (which requests weight 500 through MUI)
+/// rendering the 400 face it uses today.
+$font-medium-property: --md-sys-typescale-font-medium;
+
+// Type scale: (size, line-height, weight, tracking). Sizes are in rem so TV font sizing still applies.
+$typescale: (
+    'display-large': (3.5625rem, 4rem, 400, -0.016em),
+    'display-medium': (2.8125rem, 3.25rem, 400, 0),
+    'display-small': (2.25rem, 2.75rem, 400, 0),
+    'headline-large': (2rem, 2.5rem, 400, 0),
+    'headline-medium': (1.75rem, 2.25rem, 400, 0),
+    'headline-small': (1.5rem, 2rem, 400, 0),
+    'title-large': (1.375rem, 1.75rem, 400, 0),
+    'title-medium': (1rem, 1.5rem, 500, 0.009em),
+    'title-small': (0.875rem, 1.25rem, 500, 0.007em),
+    'body-large': (1rem, 1.5rem, 400, 0.031em),
+    'body-medium': (0.875rem, 1.25rem, 400, 0.018em),
+    'body-small': (0.75rem, 1rem, 400, 0.033em),
+    'label-large': (0.875rem, 1.25rem, 500, 0.007em),
+    'label-medium': (0.75rem, 1rem, 500, 0.042em),
+    'label-small': (0.6875rem, 1rem, 500, 0.045em)
+);

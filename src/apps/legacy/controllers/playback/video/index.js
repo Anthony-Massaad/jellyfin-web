@@ -96,6 +96,7 @@ export default function (view) {
         }
 
         setTitle(displayItem, parentName);
+        setOsdTitle(displayItem);
 
         const secondaryMediaInfo = view.querySelector('.osdSecondaryMediaInfo');
         const secondaryMediaInfoHtml = mediaInfo.getSecondaryMediaInfoHtml(displayItem, {
@@ -199,6 +200,7 @@ export default function (view) {
             btnRewind.disabled = true;
             view.querySelector('.btnSubtitles').classList.add('hide');
             view.querySelector('.btnAudio').classList.add('hide');
+            view.querySelector('.btnEpisodes').classList.add('hide');
             view.querySelector('.osdTitle').innerHTML = '';
             view.querySelector('.osdMediaInfo').innerHTML = '';
             return;
@@ -219,6 +221,12 @@ export default function (view) {
             toggleSubtitleSync('forceToHide');
         }
 
+        if (item.Type === 'Episode' && item.SeriesId) {
+            view.querySelector('.btnEpisodes').classList.remove('hide');
+        } else {
+            view.querySelector('.btnEpisodes').classList.add('hide');
+        }
+
         if (playbackManager.audioTracks(player).length > 1) {
             view.querySelector('.btnAudio').classList.remove('hide');
         } else {
@@ -232,6 +240,25 @@ export default function (view) {
             view.querySelector('.btnPreviousChapter').classList.add('hide');
             view.querySelector('.btnNextChapter').classList.add('hide');
         }
+    }
+
+    /**
+     * Shows the title above the seek bar: the series (or item) name, with the episode on a second line.
+     */
+    function setOsdTitle(item) {
+        const isEpisode = item.Type === 'Episode' && item.SeriesName;
+        const primary = isEpisode ? item.SeriesName : (item.Name || '');
+        const secondary = isEpisode ? itemHelper.getDisplayName(item, {
+            includeParentInfo: true,
+            includeIndexNumber: true
+        }) : '';
+
+        let html = `<span class="osdTitle-primary">${escapeHtml(primary)}</span>`;
+        if (secondary) {
+            html += `<span class="osdTitle-secondary">${escapeHtml(secondary)}</span>`;
+        }
+
+        view.querySelector('.osdTitle').innerHTML = html;
     }
 
     function setTitle(item, parentName) {
@@ -974,6 +1001,8 @@ export default function (view) {
                     stats: true,
                     suboffset: showSubOffset,
                     onOption: onSettingsOption
+                }).catch(() => {
+                    // The menu was closed without choosing an option
                 }).finally(() => {
                     resetIdle();
                 });
@@ -1047,6 +1076,8 @@ export default function (view) {
                 if (index !== currentIndex) {
                     playbackManager.setAudioStreamIndex(index, player);
                 }
+            }).catch(() => {
+                // The menu was closed without choosing an option
             }).finally(() => {
                 resetIdle();
             });
@@ -1095,6 +1126,9 @@ export default function (view) {
                 }
             }
         })
+            .catch(() => {
+                // The menu was closed without choosing an option
+            })
             .finally(() => {
                 resetIdle();
             });
@@ -1174,6 +1208,8 @@ export default function (view) {
                 }
 
                 toggleSubtitleSync();
+            }).catch(() => {
+                // The menu was closed without choosing an option
             }).finally(() => {
                 resetIdle();
             });
@@ -1221,6 +1257,9 @@ export default function (view) {
 
         // Skip modified keys
         if (isKeyModified) return;
+
+        // The episodes sheet handles its own keys (lists, buttons and closing)
+        if (dom.parentWithClass(e.target, 'osdEpisodesSheet')) return;
 
         const key = keyboardnavigation.getKeyName(e);
 
@@ -1956,6 +1995,15 @@ export default function (view) {
         playbackManager.fastForward(currentPlayer);
     });
     view.querySelector('.btnAudio').addEventListener('click', showAudioTrackSelection);
+    view.querySelector('.btnEpisodes').addEventListener('click', function () {
+        if (!currentItem) return;
+
+        import('components/osdEpisodes/osdEpisodes').then(({ showEpisodes }) => {
+            return showEpisodes(currentItem);
+        }).catch(err => {
+            console.error('[VideoOsd] failed to show the episodes', err);
+        });
+    });
     view.querySelector('.btnSubtitles').addEventListener('click', showSubtitleTrackSelection);
 
     // HACK: Remove `emby-button` from the rating button to make it look like the other buttons

@@ -1,0 +1,225 @@
+// MD3 helper functions and mixins.
+//
+// Each theme configures this module through `@use '../../styles/md3' with ($theme: '<id>')`, so the static
+// fallback colors emitted below always match the theme being compiled.
+//
+// Legacy TV browsers (Chrome < 49) do not support CSS custom properties, so every color declaration is emitted twice:
+// a static value first, then the `var()` value that modern browsers use.
+
+@use 'sass:color';
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:selector';
+@use 'palettes.generated' as palettes;
+@use 'tokens';
+
+/// The id of the theme being compiled (a key of `palettes.$schemes`).
+$theme: 'dark' !default;
+
+$scope: tokens.$scope;
+
+@if not map.has-key(palettes.$schemes, $theme) {
+    @error 'Unknown MD3 theme "#{$theme}". Add it to scripts/generate-md3-tokens.mjs and regenerate.';
+}
+
+/// The color roles of the current theme.
+$scheme: map.get(palettes.$schemes, $theme);
+
+/// Whether the current theme is dark.
+$is-dark: map.get(palettes.$is-dark, $theme);
+
+/// Returns the static color for a role.
+@function hex($role) {
+    @if not map.has-key($scheme, $role) {
+        @error 'Unknown MD3 color role "#{$role}".';
+    }
+
+    @return map.get($scheme, $role);
+}
+
+@function -channel($color, $name) {
+    @return math.round(color.channel($color, $name, $space: rgb));
+}
+
+/// Returns the comma separated rgb channels of a color, for use in `rgba(var(--x-rgb), alpha)`.
+@function rgb-list($color) {
+    @return #{-channel($color, 'red')}, #{-channel($color, 'green')}, #{-channel($color, 'blue')};
+}
+
+/// Returns the space separated rgb channels of a color, matching the MUI `*Channel` variables.
+@function channel-list($color) {
+    @return #{-channel($color, 'red')} #{-channel($color, 'green')} #{-channel($color, 'blue')};
+}
+
+/// Returns a color value for a role.
+/// @param {String} $role - The MD3 color role
+/// @param {Number} $alpha - The opacity to apply
+/// @param {Boolean} $static - Return the static value instead of the custom property
+@function c($role, $alpha: 1, $static: false) {
+    $value: hex($role);
+
+    @if $static {
+        @if $alpha == 1 {
+            @return $value;
+        }
+
+        @return color.change($value, $alpha: $alpha);
+    }
+
+    @if $alpha == 1 {
+        @return var(--md-sys-color-#{$role});
+    }
+
+    @return rgba(var(--md-sys-color-#{$role}-rgb), $alpha);
+}
+
+/// Emits a declaration with a static fallback followed by the custom property value.
+@mixin dual($property, $static-value, $var-value, $important: false) {
+    @if $important {
+        #{$property}: $static-value !important;
+        #{$property}: $var-value !important;
+    }
+
+    @else {
+        #{$property}: $static-value;
+        #{$property}: $var-value;
+    }
+}
+
+/// Emits a color declaration for an MD3 role.
+@mixin color($property, $role, $alpha: 1, $important: false) {
+    @include dual($property, c($role, $alpha, true), c($role, $alpha), $important);
+}
+
+/// Emits a border radius from the shape scale.
+@mixin shape($size, $property: border-radius, $important: false) {
+    @include dual($property, map.get(tokens.$shape, $size), var(--md-sys-shape-corner-#{$size}), $important);
+}
+
+/// Emits the declarations for a type scale token.
+@mixin type($token) {
+    $values: map.get(tokens.$typescale, $token);
+
+    @if not $values {
+        @error 'Unknown MD3 type scale token "#{$token}".';
+    }
+
+    font-size: list.nth($values, 1);
+    line-height: list.nth($values, 2);
+    font-weight: list.nth($values, 3);
+    letter-spacing: list.nth($values, 4);
+
+    @if list.nth($values, 3) == 500 {
+        font-family: var(#{tokens.$font-medium-property}, inherit);
+    }
+}
+
+/// Returns a transition value list for the given properties.
+@function transition($properties, $duration: 'short4', $easing: 'standard') {
+    $result: ();
+
+    @each $property in $properties {
+        $result: list.append($result, $property map.get(tokens.$duration, $duration) map.get(tokens.$easing, $easing), comma);
+    }
+
+    @return $result;
+}
+
+/// Applies the nested rules only in the TV layout. The scope attribute and the layout class are both on <html>.
+@mixin tv {
+    @at-root #{selector.replace(&, $scope, $scope + '.layout-tv')} {
+        @content;
+    }
+}
+
+/// Applies the nested rules everywhere except the TV layout.
+@mixin not-tv {
+    @at-root #{selector.replace(&, $scope, $scope + ':not(.layout-tv)')} {
+        @content;
+    }
+}
+
+/// Applies the nested rules only for the given text direction ('ltr' or 'rtl'). `dir` is set on <html> and <body>.
+@mixin dir($direction) {
+    @at-root #{selector.replace(&, $scope, $scope + '[dir="' + $direction + '"]')} {
+        @content;
+    }
+}
+
+/// Applies the nested rules only in the given layout ('desktop', 'mobile' or 'tv').
+@mixin layout($name) {
+    @at-root #{selector.replace(&, $scope, $scope + '.layout-' + $name)} {
+        @content;
+    }
+}
+
+/// Emits an elevation shadow. Shadows are skipped in the TV layout to keep painting cheap.
+@mixin elevation($level) {
+    box-shadow: map.get(tokens.$elevation, $level);
+
+    @include tv {
+        box-shadow: none;
+    }
+}
+
+/// Emits an MD3 state layer as a background image over the existing background color.
+@mixin state-layer($role, $state) {
+    $opacity: map.get(tokens.$state, $state);
+
+    @include dual(
+        background-image,
+        linear-gradient(c($role, $opacity, true), c($role, $opacity, true)),
+        linear-gradient(c($role, $opacity), c($role, $opacity))
+    );
+}
+
+/// Emits hover, focus and active state layers.
+@mixin interactive($role) {
+    @media (hover: hover) and (pointer: fine) {
+        &:hover:not(:disabled) {
+            @include state-layer($role, 'hover');
+        }
+    }
+
+    &:focus:not(:disabled) {
+        @include state-layer($role, 'focus');
+    }
+
+    &:active:not(:disabled) {
+        @include state-layer($role, 'pressed');
+    }
+}
+
+/// Emits a visible focus ring for keyboard and remote navigation.
+@mixin focus-ring($offset: 2px) {
+    @include color(outline-color, 'secondary');
+
+    outline-style: solid;
+    outline-width: 3px;
+    outline-offset: $offset;
+}
+
+/// Glass surface: a translucent tonal color with a background blur. Browsers without backdrop-filter, and the TV layout
+/// (to keep low-end devices smooth), get the opaque tonal color instead.
+@mixin glass($role: 'surface-container', $alpha: 0.72, $blur: 24px) {
+    @include color(background-color, $role);
+
+    @include not-tv {
+        @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+            @include color(background-color, $role, $alpha);
+
+            backdrop-filter: blur($blur) saturate(1.6);
+        }
+    }
+}
+
+/// MD3 Expressive shape morph: a pill (or circle) that squares off while pressed. Uses a finite radius so the corner
+/// animates smoothly (a 9999px radius would only change at the very end of the transition).
+@mixin shape-morph($rest: 2em, $pressed: 0.75em) {
+    border-radius: $rest;
+
+    &:active:not(:disabled) {
+        border-radius: $pressed;
+    }
+}

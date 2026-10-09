@@ -1,4 +1,4 @@
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -22,9 +22,10 @@ export function ItemDetailPreferences({ onChange, values }: Readonly<ItemDetailP
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-item-details-banner-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableItemDetailsBanner}
                             onChange={onChange}
                         />

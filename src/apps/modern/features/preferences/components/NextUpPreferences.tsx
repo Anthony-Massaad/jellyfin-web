@@ -1,4 +1,4 @@
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -47,9 +47,10 @@ export function NextUpPreferences({ onChange, values }: Readonly<NextUpPreferenc
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-next-up-rewatching-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableRewatchingInNextUp}
                             onChange={onChange}
                         />
@@ -64,9 +65,10 @@ export function NextUpPreferences({ onChange, values }: Readonly<NextUpPreferenc
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-next-up-images-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.episodeImagesInNextUp}
                             onChange={onChange}
                         />

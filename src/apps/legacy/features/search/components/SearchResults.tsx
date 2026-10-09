@@ -46,6 +46,7 @@ const SearchResults: FC<SearchResultsProps> = ({
         return (
             <SearchResultsRow
                 key={`${section.title}-${index}`}
+                index={index}
                 title={globalize.translate(section.title)}
                 items={section.items}
                 cardOptions={{

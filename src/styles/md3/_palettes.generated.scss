@@ -1,0 +1,697 @@
+// GENERATED FILE. DO NOT EDIT.
+// Run `node scripts/generate-md3-tokens.mjs` to regenerate.
+
+// dark: seed #00a4dc, tonalSpot, dark
+$dark: (
+    'primary': #8fcef3,
+    'on-primary': #003549,
+    'primary-container': #004c69,
+    'on-primary-container': #c3e7ff,
+    'inverse-primary': #1c6585,
+    'secondary': #b5c9d7,
+    'on-secondary': #20333e,
+    'secondary-container': #364955,
+    'on-secondary-container': #d1e5f4,
+    'tertiary': #cac1ea,
+    'on-tertiary': #322c4c,
+    'tertiary-container': #484264,
+    'on-tertiary-container': #e6deff,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #0f1417,
+    'on-background': #dfe3e7,
+    'surface': #0f1417,
+    'on-surface': #dfe3e7,
+    'surface-variant': #41484d,
+    'on-surface-variant': #c0c7cd,
+    'surface-dim': #0f1417,
+    'surface-bright': #353a3d,
+    'surface-container-lowest': #0a0f12,
+    'surface-container-low': #181c1f,
+    'surface-container': #1c2023,
+    'surface-container-high': #262b2e,
+    'surface-container-highest': #313539,
+    'surface-tint': #8fcef3,
+    'inverse-surface': #dfe3e7,
+    'inverse-on-surface': #2c3134,
+    'outline': #8b9297,
+    'outline-variant': #41484d,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// light: seed #00a4dc, tonalSpot, light
+$light: (
+    'primary': #1c6585,
+    'on-primary': #fff,
+    'primary-container': #c3e7ff,
+    'on-primary-container': #004c69,
+    'inverse-primary': #8fcef3,
+    'secondary': #4e616d,
+    'on-secondary': #fff,
+    'secondary-container': #d1e5f4,
+    'on-secondary-container': #364955,
+    'tertiary': #605a7d,
+    'on-tertiary': #fff,
+    'tertiary-container': #e6deff,
+    'on-tertiary-container': #484264,
+    'error': #ba1a1a,
+    'on-error': #fff,
+    'error-container': #ffdad6,
+    'on-error-container': #93000a,
+    'background': #f6fafe,
+    'on-background': #181c1f,
+    'surface': #f6fafe,
+    'on-surface': #181c1f,
+    'surface-variant': #dce3e9,
+    'on-surface-variant': #41484d,
+    'surface-dim': #d6dadf,
+    'surface-bright': #f6fafe,
+    'surface-container-lowest': #fff,
+    'surface-container-low': #f0f4f8,
+    'surface-container': #eaeef2,
+    'surface-container-high': #e5e8ed,
+    'surface-container-highest': #dfe3e7,
+    'surface-tint': #1c6585,
+    'inverse-surface': #2c3134,
+    'inverse-on-surface': #edf1f5,
+    'outline': #71787d,
+    'outline-variant': #c0c7cd,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// appletv: seed #4a90b8, tonalSpot, light
+$appletv: (
+    'primary': #206487,
+    'on-primary': #fff,
+    'primary-container': #c6e7ff,
+    'on-primary-container': #004c6b,
+    'inverse-primary': #91cef5,
+    'secondary': #4f616d,
+    'on-secondary': #fff,
+    'secondary-container': #d2e5f4,
+    'on-secondary-container': #374955,
+    'tertiary': #62597c,
+    'on-tertiary': #fff,
+    'tertiary-container': #e8deff,
+    'on-tertiary-container': #4a4263,
+    'error': #ba1a1a,
+    'on-error': #fff,
+    'error-container': #ffdad6,
+    'on-error-container': #93000a,
+    'background': #f6fafe,
+    'on-background': #181c1f,
+    'surface': #f6fafe,
+    'on-surface': #181c1f,
+    'surface-variant': #dde3ea,
+    'on-surface-variant': #41484d,
+    'surface-dim': #d7dadf,
+    'surface-bright': #f6fafe,
+    'surface-container-lowest': #fff,
+    'surface-container-low': #f0f4f8,
+    'surface-container': #ebeef3,
+    'surface-container-high': #e5e8ed,
+    'surface-container-highest': #dfe3e7,
+    'surface-tint': #206487,
+    'inverse-surface': #2c3135,
+    'inverse-on-surface': #eef1f6,
+    'outline': #71787e,
+    'outline-variant': #c1c7ce,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// blueradiance: seed #0a4f9c, content, dark
+$blueradiance: (
+    'primary': #aac7ff,
+    'on-primary': #002f64,
+    'primary-container': #0a4f9c,
+    'on-primary-container': #a4c4ff,
+    'inverse-primary': #245eab,
+    'secondary': #b5c7eb,
+    'on-secondary': #1f304e,
+    'secondary-container': #384968,
+    'on-secondary-container': #a7b9dd,
+    'tertiary': #efb0ff,
+    'on-tertiary': #4e1363,
+    'tertiary-container': #723786,
+    'on-tertiary-container': #edabff,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #111318,
+    'on-background': #e1e2e9,
+    'surface': #111318,
+    'on-surface': #e1e2e9,
+    'surface-variant': #424751,
+    'on-surface-variant': #c2c6d3,
+    'surface-dim': #111318,
+    'surface-bright': #37393f,
+    'surface-container-lowest': #0c0e13,
+    'surface-container-low': #191c21,
+    'surface-container': #1d2025,
+    'surface-container-high': #282a2f,
+    'surface-container-highest': #33353a,
+    'surface-tint': #aac7ff,
+    'inverse-surface': #e1e2e9,
+    'inverse-on-surface': #2e3036,
+    'outline': #8c919c,
+    'outline-variant': #424751,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// purplehaze: seed #6a2c91, content, dark
+$purplehaze: (
+    'primary': #e4b5ff,
+    'on-primary': #4d0675,
+    'primary-container': #6a2c91,
+    'on-primary-container': #dda4ff,
+    'inverse-primary': #8042a7,
+    'secondary': #dbbbea,
+    'on-secondary': #3e274c,
+    'secondary-container': #583f67,
+    'on-secondary-container': #ccaddc,
+    'tertiary': #ffb0cf,
+    'on-tertiary': #63003b,
+    'tertiary-container': #862256,
+    'on-tertiary-container': #ff9cc5,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #161218,
+    'on-background': #e9dfe9,
+    'surface': #161218,
+    'on-surface': #e9dfe9,
+    'surface-variant': #4d4450,
+    'on-surface-variant': #cfc2d2,
+    'surface-dim': #161218,
+    'surface-bright': #3d373f,
+    'surface-container-lowest': #110d13,
+    'surface-container-low': #1f1a21,
+    'surface-container': #231e25,
+    'surface-container-high': #2d282f,
+    'surface-container-highest': #38333a,
+    'surface-tint': #e4b5ff,
+    'inverse-surface': #e9dfe9,
+    'inverse-on-surface': #342f36,
+    'outline': #988d9b,
+    'outline-variant': #4d4450,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// wmc: seed #1a5aa6, content, dark
+$wmc: (
+    'primary': #a8c8ff,
+    'on-primary': #003062,
+    'primary-container': #1a5aa6,
+    'on-primary-container': #bcd3ff,
+    'inverse-primary': #215eaa,
+    'secondary': #b5c7eb,
+    'on-secondary': #1e314d,
+    'secondary-container': #354765,
+    'on-secondary-container': #a3b6d9,
+    'tertiary': #f0b0ff,
+    'on-tertiary': #4f1362,
+    'tertiary-container': #7e4290,
+    'on-tertiary-container': #f5c1ff,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #111318,
+    'on-background': #e1e2e9,
+    'surface': #111318,
+    'on-surface': #e1e2e9,
+    'surface-variant': #424751,
+    'on-surface-variant': #c2c6d3,
+    'surface-dim': #111318,
+    'surface-bright': #37393f,
+    'surface-container-lowest': #0c0e13,
+    'surface-container-low': #191c21,
+    'surface-container': #1d2025,
+    'surface-container-high': #282a2f,
+    'surface-container-highest': #32353a,
+    'surface-tint': #a8c8ff,
+    'inverse-surface': #e1e2e9,
+    'inverse-on-surface': #2e3036,
+    'outline': #8c919c,
+    'outline-variant': #424751,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// ember: seed #e8710a, tonalSpot, dark
+$ember: (
+    'primary': #ffb68a,
+    'on-primary': #522300,
+    'primary-container': #6f3811,
+    'on-primary-container': #ffdbc8,
+    'inverse-primary': #8c4f26,
+    'secondary': #e5bfa9,
+    'on-secondary': #432b1c,
+    'secondary-container': #5c4131,
+    'on-secondary-container': #ffdbc8,
+    'tertiary': #cbc992,
+    'on-tertiary': #333209,
+    'tertiary-container': #49491e,
+    'on-tertiary-container': #e8e5ac,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #1a120d,
+    'on-background': #f0dfd7,
+    'surface': #1a120d,
+    'on-surface': #f0dfd7,
+    'surface-variant': #52443c,
+    'on-surface-variant': #d7c2b8,
+    'surface-dim': #1a120d,
+    'surface-bright': #413732,
+    'surface-container-lowest': #140d08,
+    'surface-container-low': #221a15,
+    'surface-container': #261e19,
+    'surface-container-high': #312823,
+    'surface-container-highest': #3d332d,
+    'surface-tint': #ffb68a,
+    'inverse-surface': #f0dfd7,
+    'inverse-on-surface': #382e29,
+    'outline': #9f8d84,
+    'outline-variant': #52443c,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// forest: seed #2e7d4f, tonalSpot, dark
+$forest: (
+    'primary': #95d5a7,
+    'on-primary': #00391d,
+    'primary-container': #10512f,
+    'on-primary-container': #b0f1c2,
+    'inverse-primary': #2d6a45,
+    'secondary': #b6ccb9,
+    'on-secondary': #223527,
+    'secondary-container': #384b3d,
+    'on-secondary-container': #d2e8d4,
+    'tertiary': #a2cdda,
+    'on-tertiary': #023640,
+    'tertiary-container': #214c57,
+    'on-tertiary-container': #beeaf7,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #0f1510,
+    'on-background': #dfe4dd,
+    'surface': #0f1510,
+    'on-surface': #dfe4dd,
+    'surface-variant': #414942,
+    'on-surface-variant': #c0c9bf,
+    'surface-dim': #0f1510,
+    'surface-bright': #353b36,
+    'surface-container-lowest': #0a0f0b,
+    'surface-container-low': #181d19,
+    'surface-container': #1c211c,
+    'surface-container-high': #262b27,
+    'surface-container-highest': #313631,
+    'surface-tint': #95d5a7,
+    'inverse-surface': #dfe4dd,
+    'inverse-on-surface': #2c322d,
+    'outline': #8b938a,
+    'outline-variant': #414942,
+    'shadow': #000,
+    'scrim': #000
+);
+
+// orchid: seed #b4469b, tonalSpot, dark
+$orchid: (
+    'primary': #f6b2df,
+    'on-primary': #4f1e43,
+    'primary-container': #69345b,
+    'on-primary-container': #ffd7ef,
+    'inverse-primary': #844c73,
+    'secondary': #ddbed0,
+    'on-secondary': #3f2a38,
+    'secondary-container': #56404e,
+    'on-secondary-container': #fadaec,
+    'tertiary': #f5b9a1,
+    'on-tertiary': #4b2716,
+    'tertiary-container': #663c2a,
+    'on-tertiary-container': #ffdbcd,
+    'error': #ffb4ab,
+    'on-error': #690005,
+    'error-container': #93000a,
+    'on-error-container': #ffdad6,
+    'background': #181215,
+    'on-background': #ecdfe4,
+    'surface': #181215,
+    'on-surface': #ecdfe4,
+    'surface-variant': #4f444a,
+    'on-surface-variant': #d2c2ca,
+    'surface-dim': #181215,
+    'surface-bright': #3f373b,
+    'surface-container-lowest': #120c10,
+    'surface-container-low': #201a1e,
+    'surface-container': #251e22,
+    'surface-container-high': #2f282c,
+    'surface-container-highest': #3a3337,
+    'surface-tint': #f6b2df,
+    'inverse-surface': #ecdfe4,
+    'inverse-on-surface': #362e32,
+    'outline': #9b8d94,
+    'outline-variant': #4f444a,
+    'shadow': #000,
+    'scrim': #000
+);
+
+/// All color schemes by theme id.
+$schemes: (
+    'dark': $dark,
+    'light': $light,
+    'appletv': $appletv,
+    'blueradiance': $blueradiance,
+    'purplehaze': $purplehaze,
+    'wmc': $wmc,
+    'ember': $ember,
+    'forest': $forest,
+    'orchid': $orchid
+);
+
+/// Whether each theme uses a dark color scheme.
+$is-dark: (
+    'dark': true,
+    'light': false,
+    'appletv': false,
+    'blueradiance': true,
+    'purplehaze': true,
+    'wmc': true,
+    'ember': true,
+    'forest': true,
+    'orchid': true
+);
+
+// accent blue: seed #4285f4, vibrant, dark
+$accent-blue-dark: (
+    'primary': #adc6ff,
+    'on-primary': #002e69,
+    'primary-container': #004494,
+    'on-primary-container': #d8e2ff,
+    'inverse-primary': #005ac1,
+    'secondary': #c1c4eb,
+    'on-secondary': #2b2e4d,
+    'secondary-container': #414465,
+    'on-secondary-container': #dfe0ff,
+    'tertiary': #ccbff8,
+    'on-tertiary': #332958,
+    'tertiary-container': #4a4070,
+    'on-tertiary-container': #e7deff,
+    'surface-tint': #adc6ff
+);
+
+// accent blue: seed #4285f4, vibrant, light
+$accent-blue-light: (
+    'primary': #005ac1,
+    'on-primary': #fff,
+    'primary-container': #d8e2ff,
+    'on-primary-container': #004494,
+    'inverse-primary': #adc6ff,
+    'secondary': #595c7e,
+    'on-secondary': #fff,
+    'secondary-container': #dfe0ff,
+    'on-secondary-container': #414465,
+    'tertiary': #625789,
+    'on-tertiary': #fff,
+    'tertiary-container': #e7deff,
+    'on-tertiary-container': #4a4070,
+    'surface-tint': #005ac1
+);
+
+// accent teal: seed #00897b, vibrant, dark
+$accent-teal-dark: (
+    'primary': #00dec9,
+    'on-primary': #003731,
+    'primary-container': #005048,
+    'on-primary-container': #00fee5,
+    'inverse-primary': #006b5f,
+    'secondary': #a0cfd2,
+    'on-secondary': #00373a,
+    'secondary-container': #1e4d51,
+    'on-secondary-container': #bcebee,
+    'tertiary': #91d0e4,
+    'on-tertiary': #003641,
+    'tertiary-container': #004e5e,
+    'on-tertiary-container': #b1ecff,
+    'surface-tint': #00dec9
+);
+
+// accent teal: seed #00897b, vibrant, light
+$accent-teal-light: (
+    'primary': #006b5f,
+    'on-primary': #fff,
+    'primary-container': #00fee5,
+    'on-primary-container': #005048,
+    'inverse-primary': #00dec9,
+    'secondary': #386569,
+    'on-secondary': #fff,
+    'secondary-container': #bcebee,
+    'on-secondary-container': #1e4d51,
+    'tertiary': #216678,
+    'on-tertiary': #fff,
+    'tertiary-container': #b1ecff,
+    'on-tertiary-container': #004e5e,
+    'surface-tint': #006b5f
+);
+
+// accent green: seed #34a853, vibrant, dark
+$accent-green-dark: (
+    'primary': #00e465,
+    'on-primary': #003914,
+    'primary-container': #005320,
+    'on-primary-container': #68ff8a,
+    'inverse-primary': #006e2c,
+    'secondary': #a6d0b8,
+    'on-secondary': #0f3727,
+    'secondary-container': #284e3c,
+    'on-secondary-container': #c2ecd4,
+    'tertiary': #8fd4c3,
+    'on-tertiary': #00382f,
+    'tertiary-container': #005144,
+    'on-tertiary-container': #aaf0de,
+    'surface-tint': #00e465
+);
+
+// accent green: seed #34a853, vibrant, light
+$accent-green-light: (
+    'primary': #006e2c,
+    'on-primary': #fff,
+    'primary-container': #68ff8a,
+    'on-primary-container': #005320,
+    'inverse-primary': #00e465,
+    'secondary': #406653,
+    'on-secondary': #fff,
+    'secondary-container': #c2ecd4,
+    'on-secondary-container': #284e3c,
+    'tertiary': #21695c,
+    'on-tertiary': #fff,
+    'tertiary-container': #aaf0de,
+    'on-tertiary-container': #005144,
+    'surface-tint': #006e2c
+);
+
+// accent yellow: seed #fbbc04, vibrant, dark
+$accent-yellow-dark: (
+    'primary': #fcbc00,
+    'on-primary': #402d00,
+    'primary-container': #5c4300,
+    'on-primary-container': #ffdfa0,
+    'inverse-primary': #795900,
+    'secondary': #d8c68d,
+    'on-secondary': #3a2f05,
+    'secondary-container': #524619,
+    'on-secondary-container': #f5e2a7,
+    'tertiary': #d2c97c,
+    'on-tertiary': #363100,
+    'tertiary-container': #4e4807,
+    'on-tertiary-container': #eee595,
+    'surface-tint': #fcbc00
+);
+
+// accent yellow: seed #fbbc04, vibrant, light
+$accent-yellow-light: (
+    'primary': #795900,
+    'on-primary': #fff,
+    'primary-container': #ffdfa0,
+    'on-primary-container': #5c4300,
+    'inverse-primary': #fcbc00,
+    'secondary': #6b5e2f,
+    'on-secondary': #fff,
+    'secondary-container': #f5e2a7,
+    'on-secondary-container': #524619,
+    'tertiary': #66601f,
+    'on-tertiary': #fff,
+    'tertiary-container': #eee595,
+    'on-tertiary-container': #4e4807,
+    'surface-tint': #795900
+);
+
+// accent orange: seed #fa7b17, vibrant, dark
+$accent-orange-dark: (
+    'primary': #ffb68b,
+    'on-primary': #522300,
+    'primary-container': #753400,
+    'on-primary-container': #ffdbc9,
+    'inverse-primary': #994600,
+    'secondary': #edbe91,
+    'on-secondary': #462a09,
+    'secondary-container': #60401e,
+    'on-secondary-container': #ffdcbe,
+    'tertiary': #ecc078,
+    'on-tertiary': #422c00,
+    'tertiary-container': #5f4102,
+    'on-tertiary-container': #ffdeab,
+    'surface-tint': #ffb68b
+);
+
+// accent orange: seed #fa7b17, vibrant, light
+$accent-orange-light: (
+    'primary': #994600,
+    'on-primary': #fff,
+    'primary-container': #ffdbc9,
+    'on-primary-container': #753400,
+    'inverse-primary': #ffb68b,
+    'secondary': #7b5733,
+    'on-secondary': #fff,
+    'secondary-container': #ffdcbe,
+    'on-secondary-container': #60401e,
+    'tertiary': #79591b,
+    'on-tertiary': #fff,
+    'tertiary-container': #ffdeab,
+    'on-tertiary-container': #5f4102,
+    'surface-tint': #994600
+);
+
+// accent red: seed #ea4335, vibrant, dark
+$accent-red-dark: (
+    'primary': #ffb4a9,
+    'on-primary': #690002,
+    'primary-container': #930004,
+    'on-primary-container': #ffdad5,
+    'inverse-primary': #c00008,
+    'secondary': #f4ba9f,
+    'on-secondary': #4b2715,
+    'secondary-container': #653d29,
+    'on-secondary-container': #ffdbcc,
+    'tertiary': #f9b981,
+    'on-tertiary': #4b2700,
+    'tertiary-container': #683c0e,
+    'on-tertiary-container': #ffdcc0,
+    'surface-tint': #ffb4a9
+);
+
+// accent red: seed #ea4335, vibrant, light
+$accent-red-light: (
+    'primary': #c00008,
+    'on-primary': #fff,
+    'primary-container': #ffdad5,
+    'on-primary-container': #930004,
+    'inverse-primary': #ffb4a9,
+    'secondary': #80543e,
+    'on-secondary': #fff,
+    'secondary-container': #ffdbcc,
+    'on-secondary-container': #653d29,
+    'tertiary': #835324,
+    'on-tertiary': #fff,
+    'tertiary-container': #ffdcc0,
+    'on-tertiary-container': #683c0e,
+    'surface-tint': #c00008
+);
+
+// accent pink: seed #e91e63, vibrant, dark
+$accent-pink-dark: (
+    'primary': #ffb2be,
+    'on-primary': #660025,
+    'primary-container': #900038,
+    'on-primary-container': #ffd9de,
+    'inverse-primary': #bc004b,
+    'secondary': #f6b8af,
+    'on-secondary': #4c2520,
+    'secondary-container': #673b35,
+    'on-secondary-container': #ffdad5,
+    'tertiary': #ffb694,
+    'on-tertiary': #51230a,
+    'tertiary-container': #6d391e,
+    'on-tertiary-container': #ffdbcc,
+    'surface-tint': #ffb2be
+);
+
+// accent pink: seed #e91e63, vibrant, light
+$accent-pink-light: (
+    'primary': #bc004b,
+    'on-primary': #fff,
+    'primary-container': #ffd9de,
+    'on-primary-container': #900038,
+    'inverse-primary': #ffb2be,
+    'secondary': #82524b,
+    'on-secondary': #fff,
+    'secondary-container': #ffdad5,
+    'on-secondary-container': #673b35,
+    'tertiary': #894f33,
+    'on-tertiary': #fff,
+    'tertiary-container': #ffdbcc,
+    'on-tertiary-container': #6d391e,
+    'surface-tint': #bc004b
+);
+
+// accent purple: seed #9334e6, vibrant, dark
+$accent-purple-dark: (
+    'primary': #deb7ff,
+    'on-primary': #4a0080,
+    'primary-container': #6900b2,
+    'on-primary-container': #f0dbff,
+    'inverse-primary': #8a00e8,
+    'secondary': #dcbce0,
+    'on-secondary': #3f2844,
+    'secondary-container': #573e5c,
+    'on-secondary-container': #f9d8fd,
+    'tertiary': #eeb5e1,
+    'on-tertiary': #4a2245,
+    'tertiary-container': #63385c,
+    'on-tertiary-container': #ffd7f4,
+    'surface-tint': #deb7ff
+);
+
+// accent purple: seed #9334e6, vibrant, light
+$accent-purple-light: (
+    'primary': #8a00e8,
+    'on-primary': #fff,
+    'primary-container': #f0dbff,
+    'on-primary-container': #6900b2,
+    'inverse-primary': #deb7ff,
+    'secondary': #6f5575,
+    'on-secondary': #fff,
+    'secondary-container': #f9d8fd,
+    'on-secondary-container': #573e5c,
+    'tertiary': #7d4f75,
+    'on-tertiary': #fff,
+    'tertiary-container': #ffd7f4,
+    'on-tertiary-container': #63385c,
+    'surface-tint': #8a00e8
+);
+
+/// The accent roles of every accent, by accent id and brightness.
+$accent-schemes: (
+    'blue': ('dark': $accent-blue-dark, 'light': $accent-blue-light),
+    'teal': ('dark': $accent-teal-dark, 'light': $accent-teal-light),
+    'green': ('dark': $accent-green-dark, 'light': $accent-green-light),
+    'yellow': ('dark': $accent-yellow-dark, 'light': $accent-yellow-light),
+    'orange': ('dark': $accent-orange-dark, 'light': $accent-orange-light),
+    'red': ('dark': $accent-red-dark, 'light': $accent-red-light),
+    'pink': ('dark': $accent-pink-dark, 'light': $accent-pink-light),
+    'purple': ('dark': $accent-purple-dark, 'light': $accent-purple-light)
+);

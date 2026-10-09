@@ -5,6 +5,9 @@ declare module '@mui/material/styles' {
     interface ColorSchemeOverrides {
         appletv: true;
         blueradiance: true;
+        ember: true;
+        forest: true;
+        orchid: true;
         purplehaze: true;
         wmc: true;
     }

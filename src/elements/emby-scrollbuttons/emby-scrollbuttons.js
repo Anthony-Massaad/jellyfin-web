@@ -1,3 +1,5 @@
+import ResizeObserver from 'resize-observer-polyfill';
+
 import './emby-scrollbuttons.scss';
 import 'webcomponents.js/webcomponents-lite';
 import '../emby-button/paper-icon-button-light';
@@ -163,7 +165,22 @@ EmbyScrollButtonsPrototype.attachedCallback = function () {
         passive: true
     });
 
+    // Expose the scroller size and position so themes can place the buttons over the sides of the slider.
+    // The scroller does not always line up with this element (e.g. sections with their own padding).
+    const updateScrollerBox = () => {
+        const scrollerRect = scroller.getBoundingClientRect();
+        const rect = this.getBoundingClientRect();
+
+        this.style.setProperty('--emby-scroller-height', `${scroller.offsetHeight}px`);
+        this.style.setProperty('--emby-scroller-left', `${Math.round(scrollerRect.left - rect.left)}px`);
+        this.style.setProperty('--emby-scroller-right', `${Math.round(rect.right - scrollerRect.right)}px`);
+    };
+    this.resizeObserver = new ResizeObserver(updateScrollerBox);
+    this.resizeObserver.observe(scroller);
+    this.resizeObserver.observe(this);
+
     requestAnimationFrame(() => {
+        updateScrollerBox();
         this.scrollHandler();
     });
 };
@@ -179,6 +196,9 @@ EmbyScrollButtonsPrototype.detachedCallback = function () {
             passive: true
         });
     }
+
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
 
     this.scrollHandler = null;
     this.scrollButtonsLeft = null;

@@ -13,7 +13,7 @@ const DrawerHeaderLink = () => {
     const { data: systemInfo } = useSystemInfo();
 
     return (
-        <ListItemLink to='/'>
+        <ListItemLink to='/' className='drawerHeaderLink'>
             <ListItemIcon sx={{ minWidth: 56 }}>
                 <Box
                     component='img'

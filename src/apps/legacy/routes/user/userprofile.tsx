@@ -182,47 +182,46 @@ const UserProfile: FunctionComponent = () => {
             className='mainAnimatedPage libraryPage userPreferencesPage userPasswordPage noSecondaryNavPage'
         >
             <div ref={element} className='padded-left padded-right padded-bottom-page'>
-                <div
-                    className='readOnlyContent'
-                    style={{ margin: '0 auto', marginBottom: '1.8em', padding: '0 1em', display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-                >
-                    <div
-                        className='imagePlaceHolder'
-                        style={{ position: 'relative', display: 'inline-block', maxWidth: 200 }}
-                    >
-                        <input
-                            id='uploadImage'
-                            type='file'
-                            accept='image/*'
-                            style={{ position: 'absolute', right: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
-                        />
-                        <div
-                            id='image'
-                            style={{ width: 200, height: 200, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', borderRadius: '100%', backgroundSize: 'cover' }}
-                        />
-                    </div>
-                    <div style={{ verticalAlign: 'top', margin: '1em 2em', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <h2 className='username' style={{ margin: 0, fontSize: 'xx-large' }}>
+                <div className='profilePage'>
+                    {/* Header: the picture (click to change it), the name and the picture actions */}
+                    <section className='profileHeader'>
+                        <div className='imagePlaceHolder profileAvatar'>
+                            <div id='image' className='profileAvatar-image' />
+                            <span className='profileAvatar-badge material-icons photo_camera' aria-hidden='true' />
+                            <input
+                                id='uploadImage'
+                                className='profileAvatar-input'
+                                type='file'
+                                accept='image/*'
+                                aria-label={globalize.translate('ButtonAddImage')}
+                            />
+                        </div>
+                        <h1 className='username profileHeader-name'>
                             {user?.Name}
-                        </h2>
-                        <br />
-                        <Button
-                            type='button'
-                            id='btnAddImage'
-                            className='raised button-submit hide'
-                            title={globalize.translate('ButtonAddImage')}
+                        </h1>
+                        <div className='profileHeader-actions'>
+                            <Button
+                                type='button'
+                                id='btnAddImage'
+                                className='raised button-submit profileHeader-button hide'
+                                title={globalize.translate('ButtonAddImage')}
+                            />
+                            <Button
+                                type='button'
+                                id='btnDeleteImage'
+                                className='raised profileHeader-button hide'
+                                title={globalize.translate('DeleteImage')}
+                            />
+                        </div>
+                    </section>
+
+                    <section className='profileCard'>
+                        <h2 className='profileCard-title'>{globalize.translate('HeaderPassword')}</h2>
+                        <UserPasswordForm
+                            user={user}
                         />
-                        <Button
-                            type='button'
-                            id='btnDeleteImage'
-                            className='raised hide'
-                            title={globalize.translate('DeleteImage')}
-                        />
-                    </div>
+                    </section>
                 </div>
-                <UserPasswordForm
-                    user={user}
-                />
             </div>
         </Page>
 

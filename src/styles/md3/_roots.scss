@@ -1,0 +1,100 @@
+// Emits the MD3 system custom properties and maps the existing Jellyfin/MUI palette variables onto MD3 roles.
+
+@use 'sass:map';
+@use 'functions' as md;
+@use 'tokens';
+
+// The --md-sys-* properties are inert on their own, so they are safe to define globally (including the dashboard).
+:root {
+    @each $role, $value in md.$scheme {
+        --md-sys-color-#{$role}: #{$value};
+        --md-sys-color-#{$role}-rgb: #{md.rgb-list($value)};
+    }
+
+    @each $size, $value in tokens.$shape {
+        --md-sys-shape-corner-#{$size}: #{$value};
+    }
+
+    @each $name, $value in tokens.$easing {
+        --md-sys-motion-easing-#{$name}: #{$value};
+    }
+
+    @each $name, $value in tokens.$duration {
+        --md-sys-motion-duration-#{$name}: #{$value};
+    }
+
+    @each $name, $value in tokens.$state {
+        --md-sys-state-#{$name}-state-layer-opacity: #{$value};
+    }
+
+    @each $level, $value in tokens.$elevation {
+        --md-sys-elevation-level#{$level}: #{$value};
+    }
+}
+
+/// Maps a MUI palette variable (and its channel variable) to an MD3 role.
+@mixin -palette($name, $role, $alpha: 1, $channel: true) {
+    --jf-palette-#{$name}: #{md.c($role, $alpha)};
+
+    @if $channel {
+        --jf-palette-#{$name}Channel: #{md.channel-list(md.hex($role))};
+    }
+}
+
+// Inside the user app, the existing palette variables resolve to MD3 roles. This restyles every MUI component and
+// every legacy theme rule that reads `--jf-palette-*`, without touching the dashboard (which has no scope attribute).
+// `html` raises the specificity above MUI's `[data-theme="..."]` color scheme selector.
+html#{md.$scope} {
+    @if md.$is-dark {
+        color-scheme: dark;
+    }
+
+    @else {
+        color-scheme: light;
+    }
+
+    @include -palette('primary-main', 'primary');
+    @include -palette('primary-light', 'primary');
+    @include -palette('primary-dark', 'inverse-primary');
+    @include -palette('primary-contrastText', 'on-primary');
+    @include -palette('secondary-main', 'secondary');
+    @include -palette('secondary-light', 'secondary');
+    @include -palette('secondary-dark', 'secondary-container');
+    @include -palette('secondary-contrastText', 'on-secondary');
+    @include -palette('error-main', 'error');
+    @include -palette('error-light', 'error');
+    @include -palette('error-dark', 'error-container');
+    @include -palette('error-contrastText', 'on-error');
+    @include -palette('background-default', 'surface');
+    @include -palette('background-paper', 'surface-container');
+    @include -palette('text-primary', 'on-surface');
+    @include -palette('text-secondary', 'on-surface-variant');
+    @include -palette('text-disabled', 'on-surface', 0.38, false);
+    @include -palette('divider', 'outline-variant');
+    @include -palette('action-active', 'on-surface-variant');
+    @include -palette('action-hover', 'on-surface', map.get(tokens.$state, 'hover'), false);
+    @include -palette('action-selected', 'secondary-container', 1);
+    @include -palette('action-focus', 'on-surface', map.get(tokens.$state, 'focus'), false);
+    @include -palette('action-disabled', 'on-surface', 0.38, false);
+    @include -palette('action-disabledBackground', 'on-surface', 0.12, false);
+    @include -palette('AppBar-defaultBg', 'surface-container', 1, false);
+    @include -palette('AppBar-transparentBg', 'surface', 0.6, false);
+    @include -palette('Alert-infoFilledBg', 'secondary-container', 1, false);
+    @include -palette('Alert-infoFilledColor', 'on-secondary-container', 1, false);
+    @include -palette('Button-inheritContainedBg', 'secondary-container', 1, false);
+    @include -palette('Button-inheritContainedHoverBg', 'secondary-container', 1, false);
+    @include -palette('FilledInput-bg', 'surface-container-highest', 1, false);
+    @include -palette('FilledInput-hoverBg', 'surface-container-highest', 1, false);
+    @include -palette('FilledInput-borderColor', 'surface-container-highest', 1, false);
+    @include -palette('SnackbarContent-bg', 'inverse-surface', 1, false);
+    @include -palette('SnackbarContent-color', 'inverse-on-surface', 1, false);
+    @include -palette('Tooltip-bg', 'inverse-surface', 1, false);
+
+    --jf-palette-AppBar-gradient: none;
+    --jf-card-borderRadius: var(--md-sys-shape-corner-medium);
+
+    // MD3 uses tonal surfaces instead of MD2's white elevation overlays
+    @for $i from 1 through 24 {
+        --jf-overlays-#{$i}: none;
+    }
+}

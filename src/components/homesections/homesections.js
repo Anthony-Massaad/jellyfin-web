@@ -7,12 +7,15 @@ import Dashboard from 'utils/dashboard';
 import { queryClient } from 'utils/query/queryClient';
 
 import { loadRecordings } from './sections/activeRecordings';
+import { loadGenres } from './sections/genres';
 import { loadLibraryButtons } from './sections/libraryButtons';
 import { loadLibraryTiles } from './sections/libraryTiles';
 import { loadLiveTV } from './sections/liveTv';
 import { loadNextUp } from './sections/nextUp';
 import { loadRecentlyAdded } from './sections/recentlyAdded';
+import { loadRecommendations } from './sections/recommendations';
 import { loadResume } from './sections/resume';
+import { destroySpotlight, loadSpotlight, pauseSpotlight, resumeSpotlight } from './sections/spotlight';
 
 import 'elements/emby-button/paper-icon-button-light';
 import 'elements/emby-itemscontainer/emby-itemscontainer';
@@ -35,6 +38,10 @@ function getAllSectionsToShow(userSettings) {
         let section = userSettings.get('homesection' + i) || getDefaultSection(i);
         if (section === 'folders') {
             section = getDefaultSection(0);
+        }
+        // Next Up is not shown on the home screen
+        if (section === HomeSectionType.NextUp) {
+            section = HomeSectionType.None;
         }
 
         sections.push(section);
@@ -67,9 +74,14 @@ export function loadSections(elem, apiClient, user, userSettings) {
             if (userViews.length) {
                 // TV layout can have an extra section to ensure libraries are visible
                 const totalSectionCount = layoutManager.tv ? MAX_SECTIONS_TV : MAX_SECTIONS;
+                // The spotlight (hero) is always shown above the configured sections
+                html += '<div class="homeSpotlightContainer hide"></div>';
                 for (let i = 0; i < totalSectionCount; i++) {
                     html += '<div class="verticalSection section' + i + '"></div>';
                 }
+                // Recommendations and a row per genre follow the configured sections
+                html += '<div class="homeRecommendationSections"></div>';
+                html += '<div class="homeGenreSections"></div>';
 
                 elem.innerHTML = html;
                 elem.classList.add('homeSectionsContainer');
@@ -78,6 +90,9 @@ export function loadSections(elem, apiClient, user, userSettings) {
                     .map((section, index) => (
                         loadSection(elem, apiClient, user, userSettings, userViews, section, index)
                     ));
+                promises.push(loadSpotlight(elem.querySelector('.homeSpotlightContainer'), apiClient));
+                promises.push(loadRecommendations(elem.querySelector('.homeRecommendationSections'), apiClient, { enableOverflow: enableScrollX() }));
+                promises.push(loadGenres(elem.querySelector('.homeGenreSections'), apiClient, { enableOverflow: enableScrollX() }));
 
                 return Promise.all(promises)
                     // Timeout for polyfilled CustomElements (webOS 1.2)
@@ -108,6 +123,9 @@ export function loadSections(elem, apiClient, user, userSettings) {
 }
 
 export function destroySections(elem) {
+    const spotlight = elem.querySelector('.homeSpotlightContainer');
+    if (spotlight) destroySpotlight(spotlight);
+
     const elems = elem.querySelectorAll('.itemsContainer');
     for (const e of elems) {
         e.fetchData = null;
@@ -119,6 +137,9 @@ export function destroySections(elem) {
 }
 
 export function pause(elem) {
+    const spotlight = elem.querySelector('.homeSpotlightContainer');
+    if (spotlight) pauseSpotlight(spotlight);
+
     const elems = elem.querySelectorAll('.itemsContainer');
     for (const e of elems) {
         e.pause();
@@ -126,6 +147,9 @@ export function pause(elem) {
 }
 
 export function resume(elem, options) {
+    const spotlight = elem.querySelector('.homeSpotlightContainer');
+    if (spotlight) resumeSpotlight(spotlight);
+
     const elems = elem.querySelectorAll('.itemsContainer');
     const promises = [];
 

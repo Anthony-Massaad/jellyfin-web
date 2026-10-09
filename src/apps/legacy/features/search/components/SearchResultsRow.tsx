@@ -1,5 +1,5 @@
 import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client';
-import React, { type FC, useEffect, useRef } from 'react';
+import React, { type CSSProperties, type FC, useEffect, useRef } from 'react';
 
 import cardBuilder from 'components/cardbuilder/cardBuilder';
 import type { CardOptions } from 'types/cardOptions';
@@ -17,12 +17,14 @@ const createScroller = ({ title = '' }) => ({
 });
 
 interface SearchResultsRowProps {
+    /** The position of the row, used to stagger the entrance animation. */
+    index?: number;
     title?: string;
     items?: BaseItemDto[];
     cardOptions?: CardOptions;
 }
 
-const SearchResultsRow: FC<SearchResultsRowProps> = ({ title, items = [], cardOptions = {} }) => {
+const SearchResultsRow: FC<SearchResultsRowProps> = ({ index = 0, title, items = [], cardOptions = {} }) => {
     const element = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -38,7 +40,8 @@ const SearchResultsRow: FC<SearchResultsRowProps> = ({ title, items = [], cardOp
     return (
         <div
             ref={element}
-            className='verticalSection'
+            className='verticalSection searchResultsRow'
+            style={{ '--search-row-index': index } as CSSProperties}
             dangerouslySetInnerHTML={createScroller({ title })}
         />
     );

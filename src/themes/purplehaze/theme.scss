@@ -60,6 +60,9 @@ $header-gradient: linear-gradient(to right, #000420 0%, $footer-blue 18%, #2b052
     $snackbarContent-color: rgba(255, 255, 255, 0.87)
 );
 
+/* Material Design 3 layer for the user app */
+@use '../../styles/md3' with ($theme: 'purplehaze');
+
 /* Adjust background position for portrait orientation */
 @media (orientation: portrait) {
     .backgroundContainer {

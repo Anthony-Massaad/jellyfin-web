@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 interface ListItemLinkProps extends ListItemButtonBaseProps {
+    className?: string
     to: string
     includePaths?: string[]
     excludePaths?: string[]

@@ -34,9 +34,14 @@ const SearchFields: FC<SearchFieldsProps> = ({
         onSearch(e.target.value);
     }, [ onSearch ]);
 
+    const onClear = useCallback(() => {
+        onSearch('');
+        inputRef.current?.focus();
+    }, [ onSearch ]);
+
     return (
         <div className='padded-left padded-right searchFields'>
-            <div className='searchFieldsInner flex align-items-center justify-content-center'>
+            <div className={`searchFieldsInner flex align-items-center justify-content-center${query ? ' searchFieldsInner-hasQuery' : ''}`}>
                 <span className='searchfields-icon material-icons search' aria-hidden='true' />
                 <div
                     className='inputContainer flex-grow'
@@ -49,6 +54,7 @@ const SearchFields: FC<SearchFieldsProps> = ({
                         type='text'
                         data-keyboard='true'
                         placeholder={globalize.translate('Search')}
+                        aria-label={globalize.translate('Search')}
                         autoComplete='off'
                         maxLength={40}
                         // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -57,6 +63,17 @@ const SearchFields: FC<SearchFieldsProps> = ({
                         onChange={onChange}
                     />
                 </div>
+                {query && (
+                    <button
+                        type='button'
+                        className='searchfields-clear'
+                        title={globalize.translate('ButtonClearSearch')}
+                        aria-label={globalize.translate('ButtonClearSearch')}
+                        onClick={onClear}
+                    >
+                        <span className='material-icons close' aria-hidden='true' />
+                    </button>
+                )}
             </div>
             {layoutManager.tv && !browser.tv
                 && <AlphaPicker onAlphaPicked={onAlphaPicked} />

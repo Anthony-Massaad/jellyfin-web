@@ -124,7 +124,7 @@ const LibraryToolbar: FC = () => {
             {!MENU_ONLY_VIEWS.includes(viewType) && (
                 <Stack
                     direction='row'
-                    spacing={1}
+                    spacing={2}
                     sx={{
                         justifyContent: {
                             xs: 'auto',

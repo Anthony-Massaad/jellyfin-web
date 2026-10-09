@@ -1,0 +1,278 @@
+// MD3 form controls for the legacy emby-* elements: buttons, icon buttons, text fields, selects, checkboxes, switches.
+
+@use '../functions' as md;
+
+#{md.$scope} {
+    // Common button shape and type
+    // Components that style their own emby-button links (settings rows, search tiles and chips) are excluded
+    .emby-button:not(.button-link):not(.detailButton):not(.emby-tab-button):not(.homeSpotlight-button):not(.homeLibraryButton):not(.settingsItem):not(.settingsProfile-edit):not(.searchTile):not(.searchGenreChip) {
+        @include md.shape('full');
+        @include md.type('label-large');
+
+        font-size: inherit;
+        transition: md.transition((background-color, box-shadow, color), 'short4');
+    }
+
+    // Filled tonal button (default raised button)
+    .emby-button.raised:not(.button-submit):not(.button-delete) {
+        @include md.color(background, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.interactive('on-secondary-container');
+
+        box-shadow: none;
+    }
+
+    // Filled button
+    .emby-button.button-submit {
+        @include md.color(background, 'primary');
+        @include md.color(color, 'on-primary');
+        @include md.interactive('on-primary');
+
+        &:hover {
+            @include md.color(background, 'primary');
+        }
+
+        &:focus {
+            @include md.color(background, 'primary');
+            @include md.color(color, 'on-primary');
+        }
+    }
+
+    .emby-button.button-delete {
+        @include md.color(background, 'error');
+        @include md.color(color, 'on-error');
+        @include md.interactive('on-error');
+    }
+
+    // Text button
+    .emby-button.button-flat {
+        @include md.interactive('on-surface');
+    }
+
+    .emby-button.raised,
+    .emby-button.button-flat {
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Remote navigation needs a stronger focus state than the MD3 focus layer
+    .emby-button.raised.show-focus:focus,
+    .emby-button.button-flat.show-focus:focus {
+        @include md.color(background, 'primary');
+        @include md.color(color, 'on-primary');
+    }
+
+    // FAB
+    .emby-button.fab {
+        @include md.color(background, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+        @include md.shape('large', $important: true);
+        @include md.elevation(3);
+    }
+
+    // Standard icon buttons
+    .paper-icon-button-light {
+        @include md.shape('full');
+
+        transition: md.transition(background-color, 'short4');
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .paper-icon-button-light:hover:not(:disabled) {
+            color: inherit;
+
+            @include md.color(background-color, 'on-surface-variant', 0.08);
+        }
+    }
+
+    .paper-icon-button-light:active:not(:disabled) {
+        color: inherit;
+
+        @include md.color(background-color, 'on-surface-variant', 0.12);
+    }
+
+    .paper-icon-button-light.show-focus:focus {
+        @include md.color(color, 'on-secondary-container');
+        @include md.color(background-color, 'secondary-container');
+    }
+
+    // Filled text fields
+    .emby-input,
+    .emby-textarea,
+    .emby-select-withcolor {
+        @include md.type('body-large');
+        @include md.color(background, 'surface-container-highest');
+        @include md.color(color, 'on-surface');
+        @include md.dual(
+            border-radius,
+            4px 4px 0 0,
+            var(--md-sys-shape-corner-extra-small) var(--md-sys-shape-corner-extra-small) 0 0
+        );
+        @include md.dual(
+            box-shadow,
+            inset 0 -1px 0 md.c('on-surface-variant', 1, true),
+            inset 0 -1px 0 md.c('on-surface-variant')
+        );
+
+        font-size: 110%;
+        border-width: 0;
+        transition: md.transition(box-shadow, 'short4');
+    }
+
+    .emby-input,
+    .emby-textarea {
+        padding: 0.7em 0.9em;
+    }
+
+    .emby-input:focus,
+    .emby-textarea:focus,
+    .emby-select-withcolor:focus {
+        @include md.dual(
+            box-shadow,
+            inset 0 -2px 0 md.c('primary', 1, true),
+            inset 0 -2px 0 md.c('primary')
+        );
+
+        border-color: transparent !important;
+    }
+
+    .emby-select-withcolor > option {
+        @include md.color(background, 'surface-container');
+        @include md.color(color, 'on-surface');
+    }
+
+    .selectArrowContainer {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .inputLabel,
+    .inputLabelUnfocused,
+    .selectLabel,
+    .textareaLabelUnfocused {
+        @include md.type('label-large');
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .inputLabelFocused,
+    .selectLabelFocused,
+    .textareaLabelFocused {
+        @include md.color(color, 'primary');
+    }
+
+    .fieldDescription {
+        @include md.type('body-small');
+
+        font-size: 0.85em;
+    }
+
+    // Checkboxes
+    .checkboxOutline {
+        @include md.color(border-color, 'on-surface-variant');
+        @include md.shape('extra-small');
+
+        border-width: 2px;
+        transition: md.transition((background-color, border-color), 'short3');
+    }
+
+    .checkboxIcon {
+        @include md.color(color, 'on-primary');
+    }
+
+    .emby-checkbox:checked + span + .checkboxOutline {
+        @include md.color(background-color, 'primary');
+        @include md.color(border-color, 'primary');
+    }
+
+    .emby-checkbox:focus + span + .checkboxOutline,
+    .emby-checkbox:focus:not(:checked) + span + .checkboxOutline {
+        @include md.color(border-color, 'on-surface');
+        @include md.focus-ring(2px);
+    }
+
+    .checkboxLabel,
+    .checkboxListLabel {
+        @include md.type('body-large');
+
+        font-size: inherit;
+    }
+
+    // Switches
+    .mdl-switch__trackContainer {
+        width: 3.25em;
+        height: 2em;
+    }
+
+    .mdl-switch__track {
+        @include md.color(background, 'surface-container-highest');
+        @include md.color(border-color, 'outline');
+        @include md.shape('full');
+
+        box-sizing: border-box;
+        height: 2em;
+        border-width: 2px;
+        border-style: solid;
+        transition: md.transition((background-color, border-color), 'short4');
+    }
+
+    .mdl-switch__thumb {
+        @include md.color(background, 'outline');
+
+        top: 0.5em;
+        width: 1em;
+        height: 1em;
+        box-shadow: none;
+        transition: md.transition((left, right, top, width, height, background-color), 'short4', 'emphasized');
+
+        @include md.dir(ltr) {
+            left: 0.5em;
+        }
+
+        @include md.dir(rtl) {
+            right: 0.5em;
+        }
+    }
+
+    .mdl-switch__input:checked + .mdl-switch__label + .mdl-switch__trackContainer > .mdl-switch__track {
+        @include md.color(background, 'primary');
+        @include md.color(border-color, 'primary');
+    }
+
+    .mdl-switch__input:checked + .mdl-switch__label + .mdl-switch__trackContainer > .mdl-switch__thumb {
+        @include md.color(background, 'on-primary');
+
+        top: 0.25em;
+        width: 1.5em;
+        height: 1.5em;
+        box-shadow: none;
+
+        @include md.dir(ltr) {
+            left: 1.5em;
+        }
+
+        @include md.dir(rtl) {
+            right: 1.5em;
+            left: auto;
+        }
+    }
+
+    .mdl-switch__input[disabled] + .mdl-switch__label + .mdl-switch__trackContainer {
+        opacity: 0.38;
+    }
+
+    .mdl-switch__input:focus + .mdl-switch__label + .mdl-switch__trackContainer .mdl-switch__focus-helper,
+    .mdl-switch__input:checked:focus + .mdl-switch__label + .mdl-switch__trackContainer .mdl-switch__focus-helper {
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    .mdl-switch__input:focus + .mdl-switch__label + .mdl-switch__trackContainer > .mdl-switch__track {
+        @include md.focus-ring(2px);
+    }
+
+    .mdl-switch__label {
+        @include md.type('body-large');
+
+        font-size: inherit;
+    }
+}

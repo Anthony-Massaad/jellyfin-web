@@ -15,6 +15,9 @@ export function loadLibraryTiles(
     }: SectionOptions
 ) {
     let html = '';
+    // Hook for the large MD3 library tiles (styles/md3/components/_home.scss)
+    elem.classList.add('homeLibraryTiles');
+
     if (userViews.length) {
         html += '<h2 class="sectionTitle sectionTitle-cards padded-left">' + globalize.translate('HeaderMyMedia') + '</h2>';
         if (enableOverflow) {
@@ -28,8 +31,8 @@ export function loadLibraryTiles(
             items: userViews,
             shape: getBackdropShape(enableOverflow),
             showTitle: true,
-            centerText: true,
-            overlayText: false,
+            centerText: false,
+            overlayText: true,
             lazy: true,
             transition: false,
             allowBottomPadding: !enableOverflow

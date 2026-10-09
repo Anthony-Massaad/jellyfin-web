@@ -16,9 +16,21 @@
       "color": "#202020",
       "default": true
     }, {
+      "name": "Ember",
+      "id": "ember",
+      "color": "#261e19"
+    }, {
+      "name": "Forest",
+      "id": "forest",
+      "color": "#1c211c"
+    }, {
       "name": "Light",
       "id": "light",
       "color": "#303030"
+    }, {
+      "name": "Orchid",
+      "id": "orchid",
+      "color": "#251e22"
     }, {
       "name": "Purple Haze",
       "id": "purplehaze",

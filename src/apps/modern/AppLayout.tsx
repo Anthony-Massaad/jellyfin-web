@@ -9,7 +9,10 @@ import CustomCss from 'components/CustomCss';
 import OffsetAppBar from 'components/OffsetAppBar';
 import ThemeCss from 'components/ThemeCss';
 import { useApi } from 'hooks/useApi';
+import { useAccent } from 'hooks/useAccent';
+import { useMd3Scope } from 'hooks/useMd3Scope';
 
+import AppNavigationBar from './components/AppNavigationBar';
 import AppToolbar from './components/AppToolbar';
 import AppDrawer, { isDrawerPath } from './components/drawers/AppDrawer';
 import LibraryToolbar from './features/libraries/components/LibraryToolbar';
@@ -23,9 +26,14 @@ export const Component = () => {
     const { user } = useApi();
     const location = useLocation();
 
+    useMd3Scope();
+    useAccent();
+
     const isMediumScreen = useMediaQuery((t: Theme) => t.breakpoints.up('md'));
     const isDrawerAvailable = isDrawerPath(location.pathname) && Boolean(user) && !isMediumScreen;
     const isDrawerOpen = isDrawerActive && isDrawerAvailable;
+    // The MD3 navigation bar is shown on compact screens wherever the drawer is, except fullscreen pages
+    const isNavigationBarAvailable = isDrawerAvailable && location.pathname !== '/queue';
 
     const onToggleDrawer = useCallback(() => {
         setIsDrawerActive(!isDrawerActive);
@@ -60,6 +68,10 @@ export const Component = () => {
                             />
                         )
                     }
+
+                    {isNavigationBarAvailable && (
+                        <AppNavigationBar />
+                    )}
                 </StrictMode>
 
                 <Box

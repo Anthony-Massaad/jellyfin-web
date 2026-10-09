@@ -1,0 +1,66 @@
+// MD3 accent colors (src/scripts/accent.ts): `data-accent` on <html> replaces the accent roles of the current theme.
+//
+// Each theme keeps its own surfaces; only the primary, secondary and tertiary roles change, in the theme's brightness.
+// The `--jf-palette-*` variables reference the roles through var(), so they follow automatically, except for the
+// precomputed `*Channel` variables, which are emitted again here. Browsers without custom properties keep the theme
+// colors (the settings do not offer accents there).
+
+@use 'sass:map';
+@use '../functions' as md;
+@use '../palettes.generated' as palettes;
+
+$brightness: 'light';
+
+@if md.$is-dark {
+    $brightness: 'dark';
+}
+
+/// MUI palette channels that are derived from accent roles (see _roots.scss).
+$channel-palettes: (
+    'primary-main': 'primary',
+    'primary-light': 'primary',
+    'primary-dark': 'inverse-primary',
+    'primary-contrastText': 'on-primary',
+    'secondary-main': 'secondary',
+    'secondary-light': 'secondary',
+    'secondary-dark': 'secondary-container',
+    'secondary-contrastText': 'on-secondary',
+    'action-selected': 'secondary-container'
+);
+
+@each $id, $variants in palettes.$accent-schemes {
+    $roles: map.get($variants, $brightness);
+
+    html#{md.$scope}[data-accent='#{$id}'] {
+        @each $role, $value in $roles {
+            --md-sys-color-#{$role}: #{$value};
+            --md-sys-color-#{$role}-rgb: #{md.rgb-list($value)};
+        }
+
+        @each $name, $role in $channel-palettes {
+            --jf-palette-#{$name}Channel: #{md.channel-list(map.get($roles, $role))};
+        }
+    }
+}
+
+// Swatches for the accent picker: each shows the primary, secondary and tertiary colors of the accent in the current
+// theme's brightness. The "theme default" swatch shows the theme's own colors.
+@mixin -swatch-colors($primary, $secondary, $tertiary) {
+    background-image:
+        linear-gradient(to bottom, $primary 50%, rgba(0, 0, 0, 0) 50%),
+        linear-gradient(to right, $secondary 50%, $tertiary 50%);
+}
+
+#{md.$scope} {
+    .accentSwatch-color-default {
+        @include -swatch-colors(md.hex('primary'), md.hex('secondary-container'), md.hex('tertiary-container'));
+    }
+
+    @each $id, $variants in palettes.$accent-schemes {
+        $roles: map.get($variants, $brightness);
+
+        .accentSwatch-color-#{$id} {
+            @include -swatch-colors(map.get($roles, 'primary'), map.get($roles, 'secondary-container'), map.get($roles, 'tertiary-container'));
+        }
+    }
+}

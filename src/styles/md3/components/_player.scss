@@ -1,0 +1,594 @@
+// MD3 media playback: video OSD, sliders, up next dialog, skip button and the now playing bar.
+
+@use '../functions' as md;
+
+/// Standard icon button over video (white content with a white state layer)
+@mixin osd-icon-button {
+    @include md.shape('full');
+
+    color: rgba(255, 255, 255, 0.9);
+    background-color: transparent;
+    transition: md.transition(background-color, 'short4');
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover:not(:disabled) {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+
+    &:focus:not(:disabled) {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    &:active:not(:disabled) {
+        background-color: rgba(255, 255, 255, 0.16);
+    }
+}
+
+#{md.$scope} {
+    // Video OSD: a tall scrim with the title above the seek bar, transport controls on the start side
+    // and the other actions on the end side
+    .videoOsdBottom {
+        @include md.dual(
+            background,
+            linear-gradient(0deg, md.c('scrim', 0.85, true) 0%, md.c('scrim', 0.5, true) 45%, md.c('scrim', 0, true) 100%),
+            linear-gradient(0deg, md.c('scrim', 0.85) 0%, md.c('scrim', 0.5) 45%, md.c('scrim', 0) 100%)
+        );
+
+        padding-top: 10em;
+        transition: md.transition(opacity, 'medium2', 'standard');
+    }
+
+    .skinHeader-withBackground.osdHeader {
+        @include md.dual(
+            background,
+            linear-gradient(180deg, md.c('scrim', 0.7, true) 0%, md.c('scrim', 0, true) 100%),
+            linear-gradient(180deg, md.c('scrim', 0.7) 0%, md.c('scrim', 0) 100%)
+        );
+
+        transition: md.transition(opacity, 'medium2', 'standard');
+    }
+
+    // The title is shown above the seek bar instead
+    .videoOsd-appBar .MuiTypography-root {
+        display: none;
+    }
+
+    .videoOsdBottom .osdControls {
+        padding: 0 3.3% 1.25em;
+
+        @media all and (max-width: 50em) {
+            padding: 0 1em 0.75em;
+        }
+    }
+
+    .videoOsdBottom .osdMainTextContainer {
+        margin-bottom: 0.75em;
+        padding: 0;
+    }
+
+    .osdTitle {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        color: #fff;
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .osdTitle-primary {
+        @include md.type('headline-small');
+
+        @media all and (max-width: 50em) {
+            @include md.type('title-large');
+        }
+    }
+
+    .osdTitle-secondary {
+        @include md.type('title-medium');
+
+        color: rgba(255, 255, 255, 0.8);
+        margin-top: 0.15em;
+    }
+
+    .videoOsdBottom .osdSecondaryMediaInfo {
+        padding-left: 0 !important;
+    }
+
+    .osdSecondaryMediaInfo,
+    .osdTimeText,
+    .osdPositionText,
+    .osdDurationText {
+        @include md.type('label-large');
+
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .videoOsdBottom .osdPositionText,
+    .videoOsdBottom .osdDurationText {
+        min-width: 3.5em;
+        margin-bottom: 0;
+        padding: 0;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .videoOsdBottom .osdDurationText {
+        justify-content: flex-end;
+    }
+
+    // Seek bar: a thicker track that grows while hovered
+    .videoOsdBottom .sliderContainer:not(.osdVolumeSliderContainer) .mdl-slider-background-flex {
+        height: 5px;
+        margin-top: -2.5px;
+        transition: md.transition((height, margin-top), 'short4');
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .videoOsdBottom .sliderContainer:not(.osdVolumeSliderContainer):hover .mdl-slider-background-flex {
+            height: 8px;
+            margin-top: -4px;
+        }
+    }
+
+    // Controls: transport and volume on the start side, the "ends at" time pushes the other actions to the end
+    .videoOsdBottom .buttons {
+        padding-top: 0.4em;
+
+        > * {
+            order: 4;
+        }
+
+        > div[dir] {
+            order: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        > .volumeButtons {
+            order: 2;
+            margin: 0 0.5em;
+        }
+
+        > .osdTimeText {
+            order: 3;
+            margin: 0 auto 0 0.75em;
+
+            @include md.dir(rtl) {
+                margin: 0 0.75em 0 auto;
+            }
+        }
+    }
+
+    .videoOsdBottom .buttons .paper-icon-button-light {
+        @include osd-icon-button;
+
+        padding: 0.45em;
+        margin: 0 0.1em;
+    }
+
+    // Play/pause is the primary action: a large filled button
+    .videoOsdBottom .buttons .btnPause {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+
+        padding: 0.55em;
+        margin: 0 0.5em;
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover:not(:disabled) {
+                @include md.color(background-color, 'primary');
+                @include md.color(color, 'on-primary');
+                @include md.state-layer('on-primary', 'hover');
+            }
+        }
+
+        &:focus:not(:disabled) {
+            @include md.color(background-color, 'primary');
+            @include md.color(color, 'on-primary');
+            @include md.focus-ring;
+        }
+    }
+
+    // Episodes side sheet (components/osdEpisodes/osdEpisodes.ts)
+    .dialogContainer > .dialog.osdEpisodesSheet {
+        @include md.color(background-color, 'surface-container-low');
+        @include md.color(color, 'on-surface');
+
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .dialogContainer > .dialog.osdEpisodesSheet:not(.dialog-fullscreen) {
+        @include md.elevation(1);
+
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 30em;
+        max-width: 100%;
+        max-height: none;
+        border-radius: 28px 0 0 28px;
+        animation: md3-sheet-in 320ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+
+        @include md.dir(rtl) {
+            right: auto;
+            left: 0;
+            border-radius: 0 28px 28px 0;
+            animation-name: md3-sheet-in-rtl;
+        }
+
+        @media all and (max-width: 35em) {
+            border-radius: 0;
+        }
+    }
+
+    .osdEpisodes-header {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding: 1.25em 0.75em 0.75em 1.5em;
+
+        @include md.dir(rtl) {
+            padding: 1.25em 1.5em 0.75em 0.75em;
+        }
+    }
+
+    .osdEpisodes-title {
+        @include md.type('headline-small');
+
+        flex-grow: 1;
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .osdEpisodes-close {
+        @include md.color(color, 'on-surface-variant');
+        @include md.interactive('on-surface-variant');
+
+        flex-shrink: 0;
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Season dropdown
+    .osdEpisodes-seasons {
+        display: flex;
+        flex-shrink: 0;
+        padding: 0 1.5em 0.75em;
+    }
+
+    .osdEpisodes-seasonButton {
+        @include md.type('title-small');
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.interactive('on-secondary-container');
+        @include md.shape-morph;
+
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        min-height: 40px;
+        padding: 0 0.6em 0 1.1em;
+        border: 0;
+        cursor: pointer;
+        font-family: var(--md-sys-typescale-font-medium, inherit);
+        transition: md.transition(background-color, 'short4'), md.transition(border-radius, 'medium2', 'expressive-spatial');
+
+        @include md.dir(rtl) {
+            padding: 0 1.1em 0 0.6em;
+        }
+
+        > .material-icons {
+            font-size: 24px;
+            margin: 0 0 0 0.15em;
+
+            @include md.dir(rtl) {
+                margin: 0 0.15em 0 0;
+            }
+        }
+
+        &.hide {
+            display: none;
+        }
+
+        &:focus-visible {
+            @include md.focus-ring;
+        }
+    }
+
+    .osdEpisodes-seasonName {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .osdEpisodes-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 0 0.75em 1.5em;
+    }
+
+    .osdEpisodes-empty {
+        @include md.type('body-medium');
+        @include md.color(color, 'on-surface-variant');
+
+        padding: 0 0.75em;
+    }
+
+    .osdEpisodes-episode {
+        @include md.color(color, 'on-surface');
+        @include md.shape('medium');
+        @include md.interactive('on-surface');
+
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        padding: 0.75em;
+        margin: 0;
+        border: 0;
+        background-color: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        text-align: start;
+        cursor: pointer;
+
+        &:focus {
+            @include md.focus-ring(-2px);
+        }
+    }
+
+    .osdEpisodes-episode-current {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+        @include md.interactive('on-secondary-container');
+    }
+
+    .osdEpisodes-thumb {
+        @include md.color(background-color, 'surface-container-highest');
+        @include md.shape('small');
+
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 9.5em;
+        height: 5.35em;
+        overflow: hidden;
+    }
+
+    .osdEpisodes-thumbImage {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .osdEpisodes-thumbIcon {
+        @include md.color(color, 'on-surface-variant');
+
+        font-size: 2em;
+    }
+
+    .osdEpisodes-badge {
+        @include md.type('label-small');
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+        @include md.shape('extra-small');
+
+        position: absolute;
+        left: 0.4em;
+        bottom: 0.4em;
+        padding: 0.1em 0.45em;
+    }
+
+    .osdEpisodes-played {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+        @include md.shape('full');
+
+        position: absolute;
+        top: 0.35em;
+        right: 0.35em;
+        padding: 0.1em;
+        font-size: 1em;
+    }
+
+    .osdEpisodes-progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .osdEpisodes-progressBar {
+        @include md.color(background-color, 'primary');
+
+        display: block;
+        height: 100%;
+    }
+
+    .osdEpisodes-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin: 0 0 0 0.9em;
+
+        @include md.dir(rtl) {
+            margin: 0 0.9em 0 0;
+        }
+    }
+
+    .osdEpisodes-name {
+        @include md.type('title-small');
+    }
+
+    .osdEpisodes-runtime {
+        @include md.type('body-small');
+
+        margin-top: 0.15em;
+        opacity: 0.8;
+    }
+
+    .osdEpisodes-overview {
+        @include md.type('body-small');
+
+        margin-top: 0.35em;
+        opacity: 0.8;
+        overflow: hidden;
+
+        /* NOTE: line clamping is non-standard and requires vendor-prefixed rules to function */
+        display: -webkit-box; /* stylelint-disable-line value-no-vendor-prefix */
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    // Sliders (seek bar, volume and settings sliders)
+    .mdl-slider-background-flex {
+        @include md.color(background, 'on-surface', 0.24);
+        @include md.shape('full');
+
+        height: 4px;
+        margin-top: -2px;
+        overflow: hidden;
+    }
+
+    .mdl-slider-background-lower:not(.mdl-slider-background-lower-clear) {
+        @include md.color(background-color, 'primary');
+    }
+
+    .mdl-slider-background-upper {
+        @include md.color(background, 'on-surface', 0.38);
+    }
+
+    .mdl-slider {
+        @include md.color(color, 'primary');
+    }
+
+    .mdl-slider::-webkit-slider-thumb {
+        @include md.color(background, 'primary');
+    }
+
+    .mdl-slider::-moz-range-thumb {
+        @include md.color(background, 'primary');
+    }
+
+    .sliderBubble {
+        @include md.color(background, 'inverse-surface');
+        @include md.color(color, 'inverse-on-surface');
+        @include md.shape('small');
+        @include md.type('label-large');
+    }
+
+    // Over video, the inactive track is always light
+    .videoOsdBottom .mdl-slider-background-flex {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .videoOsdBottom .mdl-slider-background-upper {
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+    // Up next dialog
+    .upNextContainer {
+        @include md.color(background-color, 'surface-container-high', 0.95);
+        @include md.color(color, 'on-surface');
+        @include md.shape('large');
+        @include md.elevation(3);
+
+        padding: 1.25em 1.5em;
+    }
+
+    .upNextDialog-countdownText {
+        @include md.color(color, 'primary');
+    }
+
+    .upNextDialog-button {
+        @include md.shape('full');
+        @include md.type('label-large');
+    }
+
+    .upNextDialog-button.btnStartNow {
+        @include md.color(background, 'primary');
+        @include md.color(color, 'on-primary');
+    }
+
+    .upNextDialog-button.btnHide {
+        @include md.color(background, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+    }
+
+    // Skip intro / outro: extended FAB
+    .skip-button {
+        @include md.color(background-color, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+        @include md.shape('large');
+        @include md.type('label-large');
+        @include md.elevation(3);
+
+        min-height: 56px;
+        padding: 0 20px;
+
+        &:focus {
+            @include md.focus-ring;
+        }
+    }
+
+    // Now playing bar
+    .appfooter {
+        @include md.color(background, 'surface-container-high');
+    }
+
+    .nowPlayingBar .nowPlayingImage {
+        @include md.shape('small');
+    }
+
+    .nowPlayingBarText {
+        @include md.color(color, 'on-surface');
+    }
+
+    .nowPlayingBarSecondaryText,
+    .nowPlayingBarCurrentTime {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .nowPlayingBar .mediaButton {
+        @include md.shape('full');
+    }
+
+    .nowPlayingBar .playPauseButton {
+        @include md.color(background-color, 'primary');
+        @include md.color(color, 'on-primary');
+    }
+}
+
+@keyframes md3-sheet-in {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+@keyframes md3-sheet-in-rtl {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: none;
+    }
+}

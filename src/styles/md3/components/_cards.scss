@@ -1,0 +1,404 @@
+// MD3 cards and horizontal content rails.
+
+@use '../functions' as md;
+
+#{md.$scope} {
+    // Card surfaces use the medium shape (also exposed as --jf-card-borderRadius for custom themes)
+    .cardImageContainer,
+    .cardContent,
+    .blurhash-canvas,
+    .cardOverlayContainer,
+    .cardBox:not(.visualCardBox) .cardPadder {
+        @include md.shape('medium');
+    }
+
+    // Placeholder surface shown while images load or when an item has no image
+    .cardBox:not(.visualCardBox) .cardPadder {
+        @include md.color(background-color, 'surface-container-high');
+
+        box-shadow: none;
+    }
+
+    .cardPadder .cardImageIcon {
+        @include md.color(color, 'on-surface-variant', 0.6);
+    }
+
+    .defaultCardBackground1,
+    .defaultCardBackground2,
+    .defaultCardBackground3,
+    .defaultCardBackground4,
+    .defaultCardBackground5 {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .defaultCardBackground1,
+    .defaultCardBackground4 {
+        @include md.color(background-color, 'surface-container-highest');
+    }
+
+    .defaultCardBackground2 {
+        @include md.color(background-color, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+    }
+
+    .defaultCardBackground3 {
+        @include md.color(background-color, 'secondary-container');
+        @include md.color(color, 'on-secondary-container');
+    }
+
+    .defaultCardBackground5 {
+        @include md.color(background-color, 'tertiary-container');
+        @include md.color(color, 'on-tertiary-container');
+    }
+
+    .textCardImageContainer {
+        @include md.color(background-color, 'surface-container-high');
+    }
+
+    .cardContent-shadow {
+        box-shadow: none;
+    }
+
+    // Filled card (cards with a visible footer surface)
+    .visualCardBox {
+        @include md.color(background-color, 'surface-container-low');
+        @include md.shape('medium');
+
+        box-shadow: none;
+    }
+
+    // Card text
+    .cardText {
+        @include md.color(color, 'on-surface');
+    }
+
+    .cardText-first {
+        @include md.type('title-small');
+
+        font-size: inherit;
+    }
+
+    .cardText-secondary {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .innerCardFooter {
+        @include md.dual(
+            background,
+            linear-gradient(to top, md.c('scrim', 0.75, true), md.c('scrim', 0, true)),
+            linear-gradient(to top, md.c('scrim', 0.75), md.c('scrim', 0))
+        );
+    }
+
+    .innerCardFooterClear {
+        background: transparent;
+    }
+
+    // Overlay shown on hover/focus with the play button
+    .cardOverlayContainer {
+        @include md.color(background, 'scrim', 0.32);
+
+        transition: md.transition(opacity, 'short4');
+    }
+
+    .cardOverlayContainer > .cardOverlayFab-primary {
+        @include md.color(background-color, 'primary-container');
+        @include md.color(color, 'on-primary-container');
+        @include md.shape('large');
+        @include md.elevation(3);
+
+        transition: md.transition(transform, 'short4', 'emphasized');
+    }
+
+    .cardOverlayContainer > .cardOverlayFab-primary:hover {
+        transform: scale(1.1, 1.1);
+    }
+
+    .cardOverlayButtonIcon {
+        @include md.color(background-color, 'surface-container-highest', 0.85, $important: true);
+        @include md.color(color, 'on-surface');
+    }
+
+    .cardOverlayButtonIcon-hover {
+        background: transparent !important;
+    }
+
+    .cardOverlayButton-centered {
+        @include md.color(background-color, 'surface-container-highest', 0.85, $important: true);
+        @include md.color(color, 'on-surface');
+
+        border: 0;
+    }
+
+    // Hover elevation (fine pointers only; the TV layout keeps its focus ring and scale animation)
+    @media (hover: hover) and (pointer: fine) {
+        .card:not(.show-animation) > .cardBox {
+            @include md.not-tv {
+                transition: md.transition((transform, box-shadow), 'medium2', 'emphasized');
+            }
+        }
+
+        .card-hoverable:hover > .cardBox {
+            @include md.not-tv {
+                transform: scale(1.04, 1.04);
+            }
+        }
+    }
+
+    // Keyboard and remote focus
+    .card:focus .cardBox.visualCardBox,
+    .card:focus .cardBox:not(.visualCardBox) .cardScalable {
+        @include md.color(border-color, 'secondary', $important: true);
+    }
+
+    .card.show-focus:not(.show-animation) .cardBox.visualCardBox,
+    .card.show-focus:not(.show-animation) .cardBox:not(.visualCardBox) .cardScalable {
+        @include md.dual(
+            border-radius,
+            calc(12px + 0.5em),
+            calc(var(--md-sys-shape-corner-medium) + 0.5em)
+        );
+    }
+
+    // Progress and indicators
+    .itemProgressBar {
+        @include md.color(background, 'surface-container-highest', 0.8);
+
+        height: 4px;
+    }
+
+    .itemProgressBarForeground {
+        @include md.color(background-color, 'primary');
+    }
+
+    .countIndicator,
+    .playedIndicator,
+    .mediaSourceIndicator,
+    .fullSyncIndicator {
+        @include md.color(background, 'primary');
+        @include md.color(color, 'on-primary');
+
+        box-shadow: none;
+
+        & > svg {
+            @include md.color(fill, 'on-primary');
+        }
+    }
+
+    // Rails
+    .sectionTitleContainer .sectionTitle,
+    .sectionTitle-cards {
+        @include md.type('title-large');
+    }
+
+    .sectionTitleTextButton {
+        @include md.color(color, 'on-surface');
+        @include md.shape('full');
+    }
+
+    .sectionTitleTextButton > .material-icons {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    // Room for the hover lift and scale inside horizontally scrolling rails (the TV layout already reserves more).
+    // Native scrollers clip at their padding box, so the room has to be padding.
+    .padded-top-focusscale {
+        @include md.not-tv {
+            padding-top: 1.25em;
+            margin-top: -1.25em;
+        }
+    }
+
+    .padded-bottom-focusscale {
+        @include md.not-tv {
+            padding-bottom: 1.25em;
+            margin-bottom: -1.25em;
+        }
+    }
+
+    // Scroll snapping only applies to native scrolling (the TV layout uses transform based scrolling)
+    .emby-scroller.scrollX {
+        @include md.not-tv {
+            scroll-snap-type: x proximity;
+            scroll-padding-left: 3.3%;
+            scroll-padding-right: 3.3%;
+        }
+    }
+
+    .emby-scroller.scrollX > .scrollSlider > .card {
+        @include md.not-tv {
+            scroll-snap-align: start;
+        }
+    }
+
+    // Large cards in horizontal rails, sized so a partial card always hints at more content.
+    // Widths are in vw because the rails span the viewport. The TV layout keeps its own sizes.
+    @each $breakpoint, $portrait, $backdrop in (
+        (0, 42vw, 80vw),
+        (35em, 30vw, 58vw),
+        (48.125em, 25vw, 42vw),
+        (62.5em, 21vw, 34vw),
+        (87.5em, 18vw, 29vw),
+        (120em, 16vw, 25vw),
+        (156.25em, 13.5vw, 21vw)
+    ) {
+        @media (min-width: $breakpoint) {
+            .overflowPortraitCard,
+            .overflowSquareCard {
+                @include md.not-tv {
+                    width: $portrait;
+                }
+            }
+
+            .overflowBackdropCard,
+            .overflowSmallBackdropCard {
+                @include md.not-tv {
+                    width: $backdrop;
+                }
+            }
+        }
+    }
+
+    // Rails with scroll buttons scroll with a transform (lib/scroller), which does not clip the cards, so a rail inside
+    // a padded section (the item details page) would show cards in the section padding, past the rail and its buttons.
+    // Clipping the rail would also cut off the hover scale of the first and last cards, so instead these rails extend to
+    // the edges of the page like the home rails, with padding that keeps the first card aligned with the heading.
+    // The section padding is 3.3% of the page width (styles/librarybrowser.scss .padded-left).
+    .detailPageSecondaryContainer .emby-scroller-container > .emby-scroller:not(.scrollX) {
+        @include md.not-tv {
+            @include md.dir(ltr) {
+                margin-left: -3.3vw;
+                padding-left: 3.3vw;
+            }
+
+            @include md.dir(rtl) {
+                margin-right: -3.3vw;
+                padding-right: 3.3vw;
+            }
+        }
+    }
+
+    // The scroll buttons are placed in the same, wider box
+    .detailPageSecondaryContainer .emby-scroller-container > .emby-scrollbuttons {
+        @include md.not-tv {
+            @include md.dir(ltr) {
+                margin-left: -3.3vw;
+            }
+
+            @include md.dir(rtl) {
+                margin-right: -3.3vw;
+            }
+        }
+    }
+
+    // Scroll buttons sit over the left and right edges of the slider (desktop with a fine pointer only).
+    // emby-scrollbuttons is placed right before the scroller, so a zero height box puts the buttons at its top edge.
+    .emby-scrollbuttons {
+        position: relative;
+        top: auto;
+        right: auto;
+        left: auto;
+        display: block;
+        height: 0;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        z-index: 11;
+    }
+
+    .emby-scrollbuttons .emby-scrollbuttons-button {
+        @include md.color(color, 'on-surface');
+
+        position: absolute;
+        top: 0;
+        height: var(--emby-scroller-height, 100%);
+        width: 3.3vw;
+        min-width: 44px;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: md.transition(opacity, 'short4');
+
+        > .material-icons {
+            font-size: 2.6em;
+            transition: md.transition(transform, 'short4', 'emphasized');
+        }
+
+        &:hover:not(:disabled),
+        &:focus:not(:disabled),
+        &:active:not(:disabled) {
+            background-color: transparent;
+        }
+
+        &:hover:not(:disabled) > .material-icons {
+            transform: scale(1.25, 1.25);
+        }
+
+        &:disabled {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+    }
+
+    // "Previous" sits on the start side and "next" on the end side, with a scrim fading into the cards
+    .emby-scrollbuttons .emby-scrollbuttons-button[data-direction="left"] {
+        left: 0;
+        left: var(--emby-scroller-left, 0);
+
+        @include md.dual(
+            background-image,
+            linear-gradient(to right, md.c('surface', 0.9, true), md.c('surface', 0, true)),
+            linear-gradient(to right, md.c('surface', 0.9), md.c('surface', 0))
+        );
+
+        @include md.dir(rtl) {
+            left: auto;
+            right: 0;
+            right: var(--emby-scroller-right, 0);
+
+            @include md.dual(
+                background-image,
+                linear-gradient(to left, md.c('surface', 0.9, true), md.c('surface', 0, true)),
+                linear-gradient(to left, md.c('surface', 0.9), md.c('surface', 0))
+            );
+        }
+    }
+
+    .emby-scrollbuttons .emby-scrollbuttons-button[data-direction="right"] {
+        right: 0;
+        right: var(--emby-scroller-right, 0);
+
+        @include md.dual(
+            background-image,
+            linear-gradient(to left, md.c('surface', 0.9, true), md.c('surface', 0, true)),
+            linear-gradient(to left, md.c('surface', 0.9), md.c('surface', 0))
+        );
+
+        @include md.dir(rtl) {
+            right: auto;
+            left: 0;
+            left: var(--emby-scroller-left, 0);
+
+            @include md.dual(
+                background-image,
+                linear-gradient(to right, md.c('surface', 0.9, true), md.c('surface', 0, true)),
+                linear-gradient(to right, md.c('surface', 0.9), md.c('surface', 0))
+            );
+        }
+    }
+
+    // Shown while the rail is hovered or a button has keyboard focus. A clicked button keeps focus,
+    // so :focus-visible is used to hide it again once the pointer leaves the rail.
+    .emby-scroller-container:hover .emby-scrollbuttons-button:not(:disabled) {
+        opacity: 1;
+    }
+
+    // Separate rule: browsers without :focus-visible would drop the whole selector list
+    .emby-scrollbuttons .emby-scrollbuttons-button:focus-visible:not(:disabled) {
+        opacity: 1;
+    }
+}

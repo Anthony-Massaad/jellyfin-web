@@ -1,4 +1,4 @@
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -47,9 +47,10 @@ export function LibraryPreferences({ onChange, values }: Readonly<LibraryPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-lib-backdrops-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableLibraryBackdrops}
                             onChange={onChange}
                         />
@@ -64,9 +65,10 @@ export function LibraryPreferences({ onChange, values }: Readonly<LibraryPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-lib-theme-songs-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableLibraryThemeSongs}
                             onChange={onChange}
                         />
@@ -81,9 +83,10 @@ export function LibraryPreferences({ onChange, values }: Readonly<LibraryPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-lib-theme-videos-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.enableLibraryThemeVideos}
                             onChange={onChange}
                         />
@@ -98,9 +101,10 @@ export function LibraryPreferences({ onChange, values }: Readonly<LibraryPrefere
 
             <FormControl fullWidth>
                 <FormControlLabel
+                    labelPlacement='start'
                     aria-describedby='display-settings-show-missing-episodes-description'
                     control={
-                        <Checkbox
+                        <Switch
                             checked={values.displayMissingEpisodes}
                             onChange={onChange}
                         />

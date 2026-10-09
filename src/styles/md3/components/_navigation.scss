@@ -1,0 +1,223 @@
+// MD3 navigation shell: navigation bar offsets, top app bar, navigation drawer and primary tabs.
+
+@use '../functions' as md;
+
+$navigation-bar-height: 88px; // The floating bar (60px), its offset and a gap
+
+#{md.$scope} {
+    // Navigation bar (apps/modern/components/AppNavigationBar.tsx): keep the now playing bar and page content above it
+    &.md3-withNavigationBar {
+        .appfooter {
+            bottom: calc(#{$navigation-bar-height} + env(safe-area-inset-bottom));
+            padding-bottom: 0;
+        }
+
+        .toastContainer {
+            bottom: calc(#{$navigation-bar-height} + env(safe-area-inset-bottom));
+        }
+
+        .padded-bottom-page,
+        .page,
+        .pageWithAbsoluteTabs .pageTabContent {
+            padding-bottom: calc(5em + #{$navigation-bar-height} + env(safe-area-inset-bottom)) !important;
+        }
+    }
+
+    // Navigation drawer items (modern MUI drawer)
+    .MuiDrawer-paper {
+        padding: 12px 0 16px;
+
+        .MuiListItem-root {
+            padding: 0 12px;
+        }
+
+        .MuiListItemButton-root {
+            @include md.shape('full');
+
+            min-height: 52px;
+            width: 100%;
+            margin: 2px 0;
+            padding-left: 16px;
+            padding-right: 24px;
+            transition: md.transition((background-color, color), 'medium2', 'expressive-effects'), md.transition(transform, 'medium2', 'expressive-spatial');
+
+            &:active {
+                transform: scale(0.98);
+            }
+
+            &.Mui-focusVisible {
+                @include md.focus-ring(-3px);
+            }
+        }
+
+        .MuiListItemIcon-root {
+            @include md.color(color, 'on-surface-variant');
+
+            min-width: 40px;
+            transition: md.transition(color, 'medium2', 'expressive-effects');
+        }
+
+        .Mui-selected .MuiListItemIcon-root {
+            @include md.color(color, 'on-secondary-container');
+        }
+
+        .MuiListItemText-primary {
+            @include md.type('label-large');
+
+            font-size: 0.95rem;
+        }
+
+        // Section headings, e.g. "Libraries": sized as titles rather than captions
+        .MuiListSubheader-root {
+            @include md.type('title-medium');
+            @include md.color(color, 'primary');
+
+            font-family: var(--md-sys-typescale-font-medium, inherit);
+            font-weight: 500;
+            line-height: 1.5rem;
+            padding: 12px 28px 8px;
+            background: transparent;
+        }
+
+        .MuiDivider-root {
+            @include md.color(border-color, 'outline-variant', 0.6);
+
+            margin: 12px 28px;
+        }
+    }
+
+    // Modal drawer (phones): a wider glass panel with a rounded edge
+    .MuiDrawer-modal .MuiDrawer-paper {
+        @include md.glass('surface-container-low', 0.82, 28px);
+
+        width: 300px;
+        max-width: 85vw;
+        border-radius: 0 28px 28px 0;
+
+        @include md.dir(rtl) {
+            border-radius: 28px 0 0 28px;
+        }
+    }
+
+    // Header (apps/modern/components/drawers/DrawerHeaderLink.tsx): the server as a tonal card
+    .MuiDrawer-paper .drawerHeaderLink {
+        @include md.color(background-color, 'surface-container-high');
+        @include md.shape('extra-large');
+
+        min-height: 72px;
+        margin-bottom: 12px;
+        padding: 12px 16px;
+
+        .MuiListItemText-primary {
+            @include md.type('title-large');
+            @include md.color(color, 'on-surface');
+
+            font-family: var(--md-sys-typescale-font-medium, inherit);
+            font-weight: 500;
+        }
+
+        .MuiListItemText-secondary {
+            @include md.type('body-small');
+            @include md.color(color, 'on-surface-variant');
+        }
+
+        &:hover {
+            @include md.color(background-color, 'surface-container-highest');
+        }
+    }
+
+    // Legacy top app bar (TV and legacy layouts)
+    .skinHeader {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .skinHeader-withBackground {
+        @include md.color(background-color, 'surface-container');
+
+        background-image: none;
+    }
+
+    .pageTitle {
+        @include md.color(color, 'on-surface');
+    }
+
+    // Legacy navigation drawer
+    .mainDrawer {
+        @include md.color(background-color, 'surface-container-low');
+    }
+
+    .navMenuOption {
+        @include md.type('label-large');
+        @include md.shape('full', $important: true);
+
+        min-height: 56px;
+        box-sizing: border-box;
+        margin: 0 12px !important;
+
+        @include md.interactive('on-surface');
+
+        @include md.dir(ltr) {
+            padding: 0 24px 0 16px !important;
+        }
+
+        @include md.dir(rtl) {
+            padding: 0 16px 0 24px !important;
+        }
+    }
+
+    .navMenuOption-selected {
+        @include md.color(background, 'secondary-container', $important: true);
+        @include md.color(color, 'on-secondary-container');
+    }
+
+    .navMenuOptionIcon {
+        @include md.color(color, 'on-surface-variant');
+    }
+
+    .navMenuOption-selected .navMenuOptionIcon {
+        @include md.color(color, 'on-secondary-container');
+    }
+
+    .sidebarHeader {
+        @include md.type('title-small');
+        @include md.color(color, 'on-surface-variant');
+
+        @include md.dir(ltr) {
+            padding-left: 28px;
+        }
+
+        @include md.dir(rtl) {
+            padding-right: 28px;
+        }
+    }
+
+    // Legacy primary tabs (emby-tabs)
+    .emby-tab-button {
+        @include md.type('title-small');
+        @include md.color(color, 'on-surface-variant');
+
+        padding: 1em 1.5em;
+    }
+
+    .emby-tab-button-active {
+        @include md.color(color, 'primary');
+
+        // Active indicator
+        &::after {
+            @include md.color(background-color, 'primary');
+
+            content: "";
+            position: absolute;
+            left: 1.5em;
+            right: 1.5em;
+            bottom: 0;
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+        }
+    }
+
+    .emby-tab-button:hover,
+    .emby-tab-button.show-focus:focus {
+        @include md.color(color, 'on-surface');
+    }
+}
